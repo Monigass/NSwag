@@ -860,18 +860,18 @@
       },
       "microsoft.composition/1.0.27": {
         "runtime": {
-          "lib/portable-net45+win8+wp8+wpa81/System.Composition.AttributedModel.dll": {},
-          "lib/portable-net45+win8+wp8+wpa81/System.Composition.Convention.dll": {},
-          "lib/portable-net45+win8+wp8+wpa81/System.Composition.Hosting.dll": {},
-          "lib/portable-net45+win8+wp8+wpa81/System.Composition.Runtime.dll": {},
-          "lib/portable-net45+win8+wp8+wpa81/System.Composition.TypedParts.dll": {}
+          "lib/portable-net461+win8+wp8+wpa81/System.Composition.AttributedModel.dll": {},
+          "lib/portable-net461+win8+wp8+wpa81/System.Composition.Convention.dll": {},
+          "lib/portable-net461+win8+wp8+wpa81/System.Composition.Hosting.dll": {},
+          "lib/portable-net461+win8+wp8+wpa81/System.Composition.Runtime.dll": {},
+          "lib/portable-net461+win8+wp8+wpa81/System.Composition.TypedParts.dll": {}
         },
         "compile": {
-          "lib/portable-net45+win8+wp8+wpa81/System.Composition.AttributedModel.dll": {},
-          "lib/portable-net45+win8+wp8+wpa81/System.Composition.Convention.dll": {},
-          "lib/portable-net45+win8+wp8+wpa81/System.Composition.Hosting.dll": {},
-          "lib/portable-net45+win8+wp8+wpa81/System.Composition.Runtime.dll": {},
-          "lib/portable-net45+win8+wp8+wpa81/System.Composition.TypedParts.dll": {}
+          "lib/portable-net461+win8+wp8+wpa81/System.Composition.AttributedModel.dll": {},
+          "lib/portable-net461+win8+wp8+wpa81/System.Composition.Convention.dll": {},
+          "lib/portable-net461+win8+wp8+wpa81/System.Composition.Hosting.dll": {},
+          "lib/portable-net461+win8+wp8+wpa81/System.Composition.Runtime.dll": {},
+          "lib/portable-net461+win8+wp8+wpa81/System.Composition.TypedParts.dll": {}
         }
       },
       "microsoft.dotnet.platformabstractions/1.1.2": {

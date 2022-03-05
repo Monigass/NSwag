@@ -256,6 +256,8 @@ namespace NSwag.Commands.CodeGeneration
 
         public async Task<Dictionary<string, string>> RunAsync()
         {
+            InitializeCustomTypes(new AssemblyLoader.AssemblyLoader());
+
             var document = await GetInputSwaggerDocument().ConfigureAwait(false);
             var clientGenerator = new CSharpClientGenerator(document, Settings);
 
