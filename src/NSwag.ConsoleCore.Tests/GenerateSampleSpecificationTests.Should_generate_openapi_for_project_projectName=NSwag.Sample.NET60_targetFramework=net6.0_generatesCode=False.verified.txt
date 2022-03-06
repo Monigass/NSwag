@@ -12,7 +12,7 @@
         "tags": [
           "Values"
         ],
-        "operationId": "Values_GetAll",
+        "operationId": "Values_Get",
         "responses": {
           "200": {
             "description": "",
@@ -58,7 +58,7 @@
         "tags": [
           "Values"
         ],
-        "operationId": "Values_Get",
+        "operationId": "Values_Get2",
         "parameters": [
           {
             "name": "id",
