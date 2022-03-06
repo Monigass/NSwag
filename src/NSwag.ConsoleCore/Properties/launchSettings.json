@@ -2,7 +2,7 @@
   "profiles": {
     "NSwag.ConsoleCore": {
       "commandName": "Project",
-      "commandLineArgs": "run \"C:\\Data\\Projects\\Picturepark.SDK.TypeScript\\src\\picturepark-sdk-v1-angular\\projects\\picturepark-sdk-v1-angular\\nswag.json\""
+      "commandLineArgs": "openapi2csclient /className:LoremApiClient /namespace:Gbm.Lorem.Api.Client /input:\"C:\\GBM\\gbm-api-clients\\src\\Gbm.Lorem.Api.Client\\Resources\\lorem-swagger.json\" /output:\"C:\\GBM\\gbm-api-clients\\src\\Gbm.Lorem.Api.Client\\obj\\lorem-swaggerClient.cs\" /UseBaseUrl:false /PropertyNameGeneratorType:NSwag.CodeGeneration.CSharp:NSwag.CodeGeneration.CSharp.SnakeCasePropertyNameGenerator /EnumNameGeneratorType:NSwag.CodeGeneration.CSharp:NSwag.CodeGeneration.CSharp.SnakeCaseEnumNameGenerator /GenerateClientInterfaces:true /GenerateExceptionClasses:false /AdditionalNamespaceUsages:Gbm.Api.Clients.Common.Exceptions"
     }
   }
 }

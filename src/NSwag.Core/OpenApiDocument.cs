@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Humanizer;
 using Newtonsoft.Json;
 using NJsonSchema;
 using NJsonSchema.Generation;
@@ -268,48 +269,7 @@ namespace NSwag
             }
 
             // Find non-unique operation IDs
-
-            // 1: Append all to methods returning collections
-            foreach (var group in operationsList.GroupBy(o => o.Operation.OperationId))
-            {
-                if (group.Count() > 1)
-                {
-                    var collections = group.Where(o => o.Operation.ActualResponses.Any(r =>
-                              HttpUtilities.IsSuccessStatusCode(r.Key) &&
-                              r.Value.Schema?.ActualSchema.Type == JsonObjectType.Array));
-                    // if we have just collections, adding All will not help in discrimination
-                    if (collections.Count() == group.Count()) continue;
-
-                    foreach (var o in group)
-                    {
-                        var isCollection = o.Operation.ActualResponses.Any(r =>
-                            HttpUtilities.IsSuccessStatusCode(r.Key) &&
-                            r.Value.Schema?.ActualSchema.Type == JsonObjectType.Array);
-
-                        if (isCollection)
-                        {
-                            o.Operation.OperationId += "All";
-                        }
-                    }
-                }
-            }
-
-            // 2: Append the Method type
-            foreach (var group in operationsList.GroupBy(o => o.Operation.OperationId))
-            {
-                if (group.Count() > 1)
-                {
-                    var methods = group.Select(o => o.Method.ToUpper()).Distinct();
-                    if (methods.Count() == 1) continue;
-
-                    foreach (var o in group)
-                    {
-                        o.Operation.OperationId += o.Method.ToUpper();
-                    }
-                }
-            }
-
-            // 3: Append numbers as last resort
+            // Append numbers as last resort
             foreach (var group in operationsList.GroupBy(o => o.Operation.OperationId))
             {
                 var operations = group.ToList();
@@ -330,9 +290,62 @@ namespace NSwag
 
         private string GetOperationNameFromPath(OpenApiOperationDescription operation)
         {
-            var pathSegments = operation.Path.Trim('/').Split('/');
-            var lastPathSegment = pathSegments.LastOrDefault(s => !s.Contains("{"));
-            return string.IsNullOrEmpty(lastPathSegment) ? "Anonymous" : lastPathSegment;
+            var pathSegments = operation.Path.Trim('/').Split('/').ToList();
+            pathSegments = pathSegments.Where(s => !s.Contains("{")).ToList();
+
+            var versionPath = pathSegments.FirstOrDefault(s => 
+                new Regex("(v[0-9])+", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).IsMatch(s));
+
+            if (!string.IsNullOrEmpty(versionPath))
+            { 
+                pathSegments.Remove(versionPath);
+                versionPath = "-" + versionPath;
+            }
+
+            pathSegments = pathSegments.Select(s => s.Singularize(inputIsKnownToBePlural: false)).ToList();
+
+            var operationId = string.Join("-", pathSegments);
+
+            // 1: Append all to methods returning collections
+            var isCollection = operation.Operation.ActualResponses.Any(r =>
+                HttpUtilities.IsSuccessStatusCode(r.Key) &&
+                r.Value.Schema?.ActualSchema.Type == JsonObjectType.Array);
+
+            if (isCollection)
+            {
+                operationId = "all-" + operationId;
+                operationId = operationId.Pluralize(inputIsKnownToBeSingular: false);
+            }
+
+            var isFind = operation.Operation.ActualParameters.Any(p => 
+                p.Name.ToUpper().Contains("ID")
+                && (p.Kind == OpenApiParameterKind.Path 
+                || p.Kind == OpenApiParameterKind.Query));
+
+            var isParameterFind = operation.Operation.ActualParameters.Any(p =>
+               p.Name.ToUpper().Contains("ID")
+               && p.Kind == OpenApiParameterKind.Query);
+
+            // 2: Append the Method type
+            var method = operation.Method.ToUpper() switch
+            {
+                "POST" => "sends-",
+                "GET" => !isCollection && isFind ? "finds-" : "gets-",
+                "PUT" => "updates-",
+                "PATCH" => "patches-",
+                "DELETE" => "deletes-",
+                "OPTIONS" => "options-",
+                _ => string.Empty,
+            };
+
+            operationId = method + operationId;
+
+            if (isParameterFind)
+            {
+                operationId += "-by-parameters";
+            }
+
+            return operationId + versionPath;
         }
     }
 }
