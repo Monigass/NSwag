@@ -1,5 +1,5 @@
 {
-  "x-generator": "NSwag v13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v11.0.0.0))",
+  "x-generator": "NSwag v13.15.10.0 (NJsonSchema v10.6.10.0 (Newtonsoft.Json v11.0.0.0))",
   "swagger": "2.0",
   "info": {
     "title": "ljlkjlkj",
@@ -80,7 +80,7 @@
         "tags": [
           "Pet"
         ],
-        "operationId": "Pet_EditPetPUT",
+        "operationId": "Pet_EditPet",
         "consumes": [
           "application/json"
         ],
@@ -230,7 +230,7 @@
         "tags": [
           "Pet"
         ],
-        "operationId": "Pet_EditPetPOST",
+        "operationId": "Pet_EditPet2",
         "produces": [
           "application/json"
         ],

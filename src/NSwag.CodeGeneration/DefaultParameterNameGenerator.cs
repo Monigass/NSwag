@@ -6,6 +6,7 @@
 // <author>Rico Suter, mail@rsuter.com</author>
 //-----------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using NJsonSchema;
@@ -29,13 +30,18 @@ namespace NSwag.CodeGeneration
                 return "unnamed";
             }
 
-            var variableName = ConversionUtilities.ConvertToLowerCamelCase(name
-                .Replace("-", "_")
+            var paramName = name.Replace("-", "_")
                 .Replace(".", "_")
                 .Replace("$", string.Empty)
                 .Replace("@", string.Empty)
                 .Replace("[", string.Empty)
-                .Replace("]", string.Empty), true);
+                .Replace("]", string.Empty)
+                .Split(new[] { "_" },
+                    StringSplitOptions.RemoveEmptyEntries).Select(s =>
+                        char.ToUpperInvariant(s[0]) + s.Substring(1, s.Length - 1))
+                            .Aggregate(string.Empty, (s1, s2) => s1 + s2);
+
+            var variableName = ConversionUtilities.ConvertToLowerCamelCase(paramName, true);
 
             if (allParameters.Count(p => p.Name == name) > 1)
             {

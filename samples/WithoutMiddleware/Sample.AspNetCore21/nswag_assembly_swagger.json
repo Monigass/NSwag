@@ -1,5 +1,5 @@
 {
-  "x-generator": "NSwag v13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v11.0.0.0))",
+  "x-generator": "NSwag v13.15.10.0 (NJsonSchema v10.6.10.0 (Newtonsoft.Json v11.0.0.0))",
   "swagger": "2.0",
   "info": {
     "title": "My Title",
@@ -11,7 +11,7 @@
         "tags": [
           "Values"
         ],
-        "operationId": "Values_GetAll",
+        "operationId": "Values_Get",
         "produces": [
           "text/plain",
           "application/json",
@@ -64,7 +64,7 @@
         "tags": [
           "Values"
         ],
-        "operationId": "Values_Get",
+        "operationId": "Values_Get2",
         "produces": [
           "text/plain",
           "application/json",

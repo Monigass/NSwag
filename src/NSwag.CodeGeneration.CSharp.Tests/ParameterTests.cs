@@ -112,7 +112,7 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             var code = generator.GenerateFile();
 
             // Assert
-            Assert.Contains("RemoveElementAsync(string x_User, System.Collections.Generic.IEnumerable<long> elementId, string secureToken)", code);
+            Assert.Contains("RemoveElementAsync(string xUser, System.Collections.Generic.IEnumerable<long> elementId, string secureToken)", code);
         }
 
         [Fact]

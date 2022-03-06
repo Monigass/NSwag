@@ -291,7 +291,7 @@ namespace NSwag
         private string GetOperationNameFromPath(OpenApiOperationDescription operation)
         {
             var pathSegments = operation.Path.Trim('/').Split('/').ToList();
-            pathSegments = pathSegments.Where(s => !s.Contains("{")).ToList();
+            pathSegments = pathSegments.Where(s => !s.Contains("{") && !s.ToLower().Contains("api")).ToList();
 
             var versionPath = pathSegments.FirstOrDefault(s => 
                 new Regex("(v[0-9])+", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).IsMatch(s));

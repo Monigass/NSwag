@@ -203,7 +203,7 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             Assert.Contains($"ComplexRequired([Microsoft.AspNetCore.Mvc.FromBody] [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] ComplexType complexType)", code);
             Assert.Contains($"Foo([Microsoft.AspNetCore.Mvc.FromQuery] string test, [Microsoft.AspNetCore.Mvc.FromQuery] bool? test2)", code);
             Assert.Contains($"FooRequired([Microsoft.AspNetCore.Mvc.FromQuery] [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string test, [Microsoft.AspNetCore.Mvc.FromQuery] [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] bool test2)", code);
-            Assert.Contains($"HeaderParamRequired([Microsoft.AspNetCore.Mvc.FromHeader(Name = \"comes-from-header\")] [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string comes_from_header)", code);
+            Assert.Contains($"HeaderParamRequired([Microsoft.AspNetCore.Mvc.FromHeader(Name = \"comes-from-header\")] [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string comesFromHeader)", code);
             Assert.Contains("Bar()", code);
         }
 
@@ -228,7 +228,7 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             Assert.Contains($"ComplexRequired([Microsoft.AspNetCore.Mvc.FromBody] [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] ComplexType complexType)", code);
             Assert.Contains($"Foo([Microsoft.AspNetCore.Mvc.FromQuery] string test, [Microsoft.AspNetCore.Mvc.FromQuery] bool? test2)", code);
             Assert.Contains($"FooRequired([Microsoft.AspNetCore.Mvc.FromQuery] [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string test, [Microsoft.AspNetCore.Mvc.FromQuery] [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] bool test2)", code);
-            Assert.Contains($"HeaderParamRequired([Microsoft.AspNetCore.Mvc.FromHeader(Name = \"comes-from-header\")] [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string comes_from_header)", code);
+            Assert.Contains($"HeaderParamRequired([Microsoft.AspNetCore.Mvc.FromHeader(Name = \"comes-from-header\")] [Microsoft.AspNetCore.Mvc.ModelBinding.BindRequired] string comesFromHeader)", code);
             Assert.Contains("Bar()", code);
         }
 
