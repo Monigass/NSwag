@@ -50,6 +50,7 @@ namespace NSwag.Core.Tests.Serialization
                         {
                             new OpenApiParameter
                             {
+                                Name = "foo",
                                 Kind = OpenApiParameterKind.Query,
                                 Example = 2,
                                 Examples = new Dictionary<string, OpenApiExample>

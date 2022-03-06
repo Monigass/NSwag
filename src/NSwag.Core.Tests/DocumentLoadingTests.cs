@@ -40,7 +40,7 @@ namespace NSwag.Core.Tests
             document.GenerateOperationIds();
 
             // Assert
-            Assert.Equal("pets", document.Operations.First().Operation.OperationId);
+            Assert.Equal("gets-all-pets", document.Operations.First().Operation.OperationId);
         }
 
         [Fact]
