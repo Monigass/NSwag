@@ -384,7 +384,10 @@ namespace NSwag
                 versionPath = "-" + versionPath;
             }
 
-            pathSegments = pathSegments.Select(s => s.Singularize(inputIsKnownToBePlural: false)).ToList();
+            pathSegments = pathSegments.Select(
+                s => s.ToLower().EndsWith("data") 
+                ? s 
+                : s.Singularize(inputIsKnownToBePlural: false)).ToList();
 
             var operationId = string.Join("-", pathSegments);
 
@@ -404,8 +407,8 @@ namespace NSwag
                 && (p.Kind == OpenApiParameterKind.Path
                 || p.Kind == OpenApiParameterKind.Query));
 
-            var isParameterFind = operation.Operation.ActualParameters.Any(p =>
-               p.Name.ToUpper().Contains("ID")
+            var isParameterFind = operation.Operation.ActualParameters.Any(
+                p => p.Name.ToUpper().Contains("ID")
                && p.Kind == OpenApiParameterKind.Query);
 
             // 2: Append the Method type
