@@ -8,8 +8,6 @@
 
 using NConsole;
 using Newtonsoft.Json;
-using NJsonSchema;
-using NJsonSchema.CodeGeneration;
 using NSwag.CodeGeneration;
 
 namespace NSwag.Commands.CodeGeneration

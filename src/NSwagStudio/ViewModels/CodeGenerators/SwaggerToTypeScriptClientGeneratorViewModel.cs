@@ -18,10 +18,10 @@ namespace NSwagStudio.ViewModels.CodeGenerators
     public class SwaggerToTypeScriptClientGeneratorViewModel : ViewModelBase
     {
         private string _clientCode;
-        private SwaggerToTypeScriptClientCommand _command = new SwaggerToTypeScriptClientCommand();
+        private OpenApiToTypeScriptClientCommand _command = new OpenApiToTypeScriptClientCommand();
 
         /// <summary>Gets the settings.</summary>
-        public SwaggerToTypeScriptClientCommand Command
+        public OpenApiToTypeScriptClientCommand Command
         {
             get { return _command; }
             set
@@ -73,9 +73,8 @@ namespace NSwagStudio.ViewModels.CodeGenerators
             .ToArray();
 
         /// <summary>Gets the list of date time types.</summary>
-        public TypeScriptDateTimeType[] DateTimeTypes { get; } = Enum.GetNames(typeof(TypeScriptDateTimeType))
-            .Select(t => (TypeScriptDateTimeType)Enum.Parse(typeof(TypeScriptDateTimeType), t))
-            .ToArray();
+        public TypeScriptDateTimeType[] DateTimeTypes { get; } =
+            (TypeScriptDateTimeType[])Enum.GetValues(typeof(TypeScriptDateTimeType));
 
         /// <summary>Gets the list of null values.</summary>
         public TypeScriptNullValue[] NullValues { get; } = Enum.GetNames(typeof(TypeScriptNullValue))

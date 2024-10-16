@@ -66,6 +66,9 @@ namespace NSwag.CodeGeneration.Models
         /// <summary>Gets the operation ID.</summary>
         public string Id => _operation.OperationId;
 
+        /// <summary>Gets the operation tags.</summary>
+        public List<string> Tags => _operation.Tags;
+
         /// <summary>Gets or sets the HTTP path (i.e. the absolute route).</summary>
         public string Path { get; set; }
 
@@ -213,7 +216,7 @@ namespace NSwag.CodeGeneration.Models
         /// <summary>Gets a value indicating whether the operation consumes 'application/x-www-form-urlencoded'.</summary>
         public bool ConsumesFormUrlEncoded =>
             _operation.ActualConsumes?.Any(c => c == "application/x-www-form-urlencoded") == true ||
-            _operation.RequestBody?.Content.Any(mt => mt.Key == "application/x-www-form-urlencoded") == true;
+            _operation.ActualRequestBody?.Content.Any(mt => mt.Key == "application/x-www-form-urlencoded") == true;
 
         /// <summary>Gets the form parameters.</summary>
         public IEnumerable<TParameterModel> FormParameters => Parameters.Where(p => p.Kind == OpenApiParameterKind.FormData);
@@ -223,6 +226,12 @@ namespace NSwag.CodeGeneration.Models
 
         /// <summary>Gets the summary text.</summary>
         public string Summary => ConversionUtilities.TrimWhiteSpaces(_operation.Summary);
+
+        /// <summary>Gets a value indicating whether the operation has description.</summary>
+        public bool HasDescription => !string.IsNullOrEmpty(Description);
+
+        /// <summary>Gets the remarks text.</summary>
+        public string Description => ConversionUtilities.TrimWhiteSpaces(_operation.Description);
 
         /// <summary>Gets a value indicating whether the operation has any documentation.</summary>
         public bool HasDocumentation => HasSummary || HasResultDescription || Parameters.Any(p => p.HasDescription) || _operation.IsDeprecated;
@@ -236,6 +245,9 @@ namespace NSwag.CodeGeneration.Models
         /// <summary>Gets or sets a value indicating whether this operation has an binary body parameter.</summary>
         public bool HasBinaryBodyParameter => Parameters.Any(p => p.IsBinaryBodyParameter);
 
+        /// <summary>Gets a value indicating whether this operation has a text/plain body parameter.</summary>
+        public bool HasPlainTextBodyParameter => Consumes == "text/plain";
+
         /// <summary>Gets the mime type of the request body.</summary>
         public string Consumes
         {
@@ -247,7 +259,7 @@ namespace NSwag.CodeGeneration.Models
                 }
 
                 return _operation.ActualConsumes?.FirstOrDefault() ??
-                    _operation.RequestBody?.Content.Keys.FirstOrDefault() ??
+                    _operation.ActualRequestBody?.Content.Keys.FirstOrDefault() ??
                     "application/json";
             }
         }
@@ -338,8 +350,8 @@ namespace NSwag.CodeGeneration.Models
                 .ToList();
 
             var formDataSchema =
-                _operation?.RequestBody?.Content?.ContainsKey("multipart/form-data") == true ?
-                _operation.RequestBody.Content["multipart/form-data"]?.Schema : null;
+                _operation?.ActualRequestBody?.Content?.ContainsKey("multipart/form-data") == true ?
+                _operation.ActualRequestBody.Content["multipart/form-data"]?.Schema.ActualSchema: null;
 
             if (formDataSchema != null && formDataSchema.ActualProperties.Count > 0)
             {
@@ -349,6 +361,7 @@ namespace NSwag.CodeGeneration.Models
                     Name = p.Key,
                     Kind = OpenApiParameterKind.FormData,
                     Schema = p.Value,
+                    Description = p.Value.Description,
                     CollectionFormat = p.Value.Type.HasFlag(JsonObjectType.Array) && p.Value.Item != null ?
                         OpenApiParameterCollectionFormat.Multi : OpenApiParameterCollectionFormat.Undefined,
                     //Explode = p.Value.Type.HasFlag(JsonObjectType.Array) && p.Value.Item != null,

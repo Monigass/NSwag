@@ -96,8 +96,8 @@ namespace NSwag.CodeGeneration.CSharp.Models
         public bool RequiresFileParameterType =>
             _settings.CSharpGeneratorSettings.ExcludedTypeNames?.Contains("FileParameter") != true &&
             (_document.Operations.Any(o => o.Operation.ActualParameters.Any(p => p.ActualTypeSchema.IsBinary)) ||
-             _document.Operations.Any(o => o.Operation?.RequestBody?.Content?.Any(c => c.Value.Schema?.IsBinary == true ||
-                                                                                       c.Value.Schema?.ActualProperties.Any(p => p.Value.IsBinary ||
+             _document.Operations.Any(o => o.Operation?.ActualRequestBody?.Content?.Any(c => c.Value.Schema?.IsBinary == true ||
+                                                                                       c.Value.Schema?.ActualSchema.ActualProperties.Any(p => p.Value.IsBinary ||
                                                                                                                                  p.Value.Item?.IsBinary == true ||
                                                                                                                                  p.Value.Items.Any(i => i.IsBinary)
                                                                                                                                  ) == true) == true));
