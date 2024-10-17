@@ -70,7 +70,7 @@ namespace NSwag.CodeGeneration
 
                 
 
-                return ConversionUtilities.ConvertToLowerCamelCase(variableName, true);
+                return ConversionUtilities.ConvertToLowerCamelCase(name, true);
             }
         }
     }
