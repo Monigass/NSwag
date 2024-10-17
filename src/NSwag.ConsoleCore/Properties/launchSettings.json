@@ -2,7 +2,7 @@
   "profiles": {
     "NSwag.ConsoleCore": {
       "commandName": "Project",
-      "commandLineArgs": "openapi2csclient /className:LoremApiClient /namespace:Gbm.Lorem.Api.Client /input:\"C:\\GBM\\gbm-api-clients\\src\\Gbm.Lorem.Api.Client\\Resources\\lorem-swagger.json\" /output:\"C:\\GBM\\gbm-api-clients\\src\\Gbm.Lorem.Api.Client\\obj\\lorem-swaggerClient.cs\" /UseBaseUrl:false /PropertyNameGeneratorType:NSwag.CodeGeneration.CSharp:NSwag.CodeGeneration.CSharp.SnakeCasePropertyNameGenerator /EnumNameGeneratorType:NSwag.CodeGeneration.CSharp:NSwag.CodeGeneration.CSharp.SnakeCaseEnumNameGenerator /GenerateClientInterfaces:true /GenerateExceptionClasses:false /AdditionalNamespaceUsages:Gbm.Api.Clients.Common.Exceptions"
+      "commandLineArgs": "openapi2csclient /className:LoremApiClient /namespace:Gbm.Lorem.Api.Client /input:\"C:\\GBM\\advisors-api\\gbm-platform-clients\\src\\Gbm.Platform.Sdk.Lorem\\Resources\\lorem-swagger.json\" /output:\"C:\\GBM\\advisors-api\\gbm-platform-clients\\src\\Gbm.Platform.Sdk.Lorem\\obj\\lorem-swaggerClient.cs\" /UseBaseUrl:false /PropertyNameGeneratorType:NSwag.CodeGeneration.CSharp:NSwag.CodeGeneration.CSharp.SnakeCasePropertyNameGenerator /EnumNameGeneratorType:NSwag.CodeGeneration.CSharp:NSwag.CodeGeneration.CSharp.SnakeCaseEnumNameGenerator /GenerateClientInterfaces:true /GenerateExceptionClasses:false /AdditionalNamespaceUsages:Gbm.Api.Clients.Common.Exceptions"
     }
   }
 }
