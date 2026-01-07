@@ -1,11 +1,9 @@
-﻿using System.Threading.Tasks;
-using Xunit;
-using NSwag.Generation.WebApi;
+﻿using NSwag.Generation.WebApi;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
-using NJsonSchema.Generation;
 using NJsonSchema;
 using NJsonSchema.NewtonsoftJson.Generation;
+using NSwag.CodeGeneration.Tests;
 
 namespace NSwag.CodeGeneration.TypeScript.Tests
 {
@@ -20,7 +18,7 @@ namespace NSwag.CodeGeneration.TypeScript.Tests
         public class DiscussionController : Controller
         {
             [HttpPost]
-            public void AddMessage([FromBody, Required]Foo message)
+            public void AddMessage([FromBody, Required] Foo message)
             {
             }
 
@@ -68,7 +66,7 @@ namespace NSwag.CodeGeneration.TypeScript.Tests
         {
             [HttpPost]
             [Consumes("application/x-www-form-urlencoded")]
-            public void AddMessage([FromForm]Foo message, [FromForm]string messageId)
+            public void AddMessage([FromForm] Foo message, [FromForm] string messageId)
             {
             }
         }
@@ -83,6 +81,7 @@ namespace NSwag.CodeGeneration.TypeScript.Tests
             });
             var document = await generator.GenerateForControllerAsync<DiscussionController>();
             var json = document.ToJson();
+            Assert.NotNull(json);
 
             // Act
             var codeGen = new TypeScriptClientGenerator(document, new TypeScriptClientGeneratorSettings
@@ -91,13 +90,13 @@ namespace NSwag.CodeGeneration.TypeScript.Tests
                 GenerateClientInterfaces = true,
                 TypeScriptGeneratorSettings =
                 {
-                    TypeScriptVersion = 2.0m
+                    TypeScriptVersion = 4.3m
                 }
             });
             var code = codeGen.GenerateFile();
 
             // Assert
-            Assert.Contains("addMessage(message: Foo): Observable<void>", code);
+            await VerifyHelper.Verify(code);
         }
 
         [Fact]
@@ -110,6 +109,7 @@ namespace NSwag.CodeGeneration.TypeScript.Tests
             });
             var document = await generator.GenerateForControllerAsync<DiscussionController>();
             var json = document.ToJson();
+            Assert.NotNull(json);
 
             // Act
             var codeGen = new TypeScriptClientGenerator(document, new TypeScriptClientGeneratorSettings
@@ -118,15 +118,14 @@ namespace NSwag.CodeGeneration.TypeScript.Tests
                 GenerateClientInterfaces = true,
                 TypeScriptGeneratorSettings =
                 {
-                    TypeScriptVersion = 2.0m,
+                    TypeScriptVersion = 4.3m,
                     ExportTypes = true
                 }
             });
             var code = codeGen.GenerateFile();
 
             // Assert
-            Assert.Contains("export class DiscussionClient", code);
-            Assert.Contains("export interface IDiscussionClient", code);
+            await VerifyHelper.Verify(code);
         }
 
         [Fact]
@@ -139,6 +138,7 @@ namespace NSwag.CodeGeneration.TypeScript.Tests
             });
             var document = await generator.GenerateForControllerAsync<DiscussionController>();
             var json = document.ToJson();
+            Assert.NotNull(json);
 
             // Act
             var codeGen = new TypeScriptClientGenerator(document, new TypeScriptClientGeneratorSettings
@@ -147,15 +147,14 @@ namespace NSwag.CodeGeneration.TypeScript.Tests
                 GenerateClientInterfaces = true,
                 TypeScriptGeneratorSettings =
                 {
-                    TypeScriptVersion = 2.0m,
+                    TypeScriptVersion = 4.3m,
                     ExportTypes = false
                 }
             });
             var code = codeGen.GenerateFile();
 
             // Assert
-            Assert.DoesNotContain("export class DiscussionClient", code);
-            Assert.DoesNotContain("export interface IDiscussionClient", code);
+            await VerifyHelper.Verify(code);
         }
 
         [Fact]
@@ -168,6 +167,7 @@ namespace NSwag.CodeGeneration.TypeScript.Tests
             });
             var document = await generator.GenerateForControllerAsync<DiscussionController>();
             var json = document.ToJson();
+            Assert.NotNull(json);
 
             // Act
             var codeGen = new TypeScriptClientGenerator(document, new TypeScriptClientGeneratorSettings
@@ -176,15 +176,14 @@ namespace NSwag.CodeGeneration.TypeScript.Tests
                 GenerateDtoTypes = true,
                 TypeScriptGeneratorSettings =
                 {
-                    TypeScriptVersion = 2.7m,
+                    TypeScriptVersion = 4.3m,
                     ExportTypes = false
                 }
             });
             var code = codeGen.GenerateFile();
 
             // Assert
-            Assert.Contains("this.request = new RequestBodyBase()", code);
-            Assert.Contains("this.request = new RequestBody()", code);
+            await VerifyHelper.Verify(code);
         }
 
         [Fact]
@@ -197,6 +196,7 @@ namespace NSwag.CodeGeneration.TypeScript.Tests
             });
             var document = await generator.GenerateForControllerAsync<UrlEncodedRequestConsumingController>();
             var json = document.ToJson();
+            Assert.NotNull(json);
 
             // Act
             var codeGen = new TypeScriptClientGenerator(document, new TypeScriptClientGeneratorSettings
@@ -204,15 +204,13 @@ namespace NSwag.CodeGeneration.TypeScript.Tests
                 Template = TypeScriptTemplate.Angular,
                 TypeScriptGeneratorSettings =
                 {
-                    TypeScriptVersion = 2.0m
+                    TypeScriptVersion = 4.3m
                 }
             });
             var code = codeGen.GenerateFile();
 
             // Assert
-            Assert.Contains("content_", code);
-            Assert.DoesNotContain("FormData", code);
-            Assert.Contains("\"Content-Type\": \"application/x-www-form-urlencoded\"", code);
+            await VerifyHelper.Verify(code);
         }
     }
 }

@@ -6,15 +6,13 @@
 // <author>Rico Suter, mail@rsuter.com</author>
 //-----------------------------------------------------------------------
 
-using System;
+#pragma warning disable IDE0005
+
 using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -25,9 +23,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Namotion.Reflection;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using NJsonSchema;
-using NJsonSchema.Generation;
 using NSwag.Generation.Processors;
 using NSwag.Generation.Processors.Contexts;
 
@@ -61,7 +57,7 @@ namespace NSwag.Generation.AspNetCore
         /// <returns>The settings.</returns>
         public static JsonSerializerSettings GetJsonSerializerSettings(IServiceProvider serviceProvider)
         {
-            dynamic GetJsonOptionsWithReflection(IServiceProvider sp)
+            static dynamic GetJsonOptionsWithReflection(IServiceProvider sp)
             {
                 try
                 {
@@ -161,9 +157,9 @@ namespace NSwag.Generation.AspNetCore
                     var options = serviceProvider.GetService(optionsType);
                     var value = optionsType.GetProperty("Value")?.GetValue(options);
                     var jsonOptions = value?.GetType().GetProperty("JsonSerializerOptions")?.GetValue(value);
-                    if (jsonOptions is JsonSerializerOptions)
+                    if (jsonOptions is JsonSerializerOptions serializerOptions)
                     {
-                        return (JsonSerializerOptions)jsonOptions;
+                        return serializerOptions;
                     }
                 }
                 catch
@@ -220,18 +216,14 @@ namespace NSwag.Generation.AspNetCore
                         }
 
                         var path = apiDescription.RelativePath;
-                        if (!path.StartsWith("/", StringComparison.Ordinal))
+                        if (!path.StartsWith('/'))
                         {
                             path = "/" + path;
                         }
 
-                        var httpMethod = apiDescription.HttpMethod?.ToLowerInvariant();
-                        if (httpMethod == null)
-                        {
-                            httpMethod = apiDescription.ParameterDescriptions.Any(p => p.Source == BindingSource.Body)
-                                ? OpenApiOperationMethod.Post
-                                : OpenApiOperationMethod.Get;
-                        }
+                        var httpMethod = apiDescription.HttpMethod?.ToLowerInvariant() ?? (apiDescription.ParameterDescriptions.Any(p => p.Source == BindingSource.Body)
+                            ? OpenApiOperationMethod.Post
+                            : OpenApiOperationMethod.Get);
 
                         var operation = new OpenApiOperation();
 #if NETCOREAPP3_1_OR_GREATER
@@ -251,7 +243,7 @@ namespace NSwag.Generation.AspNetCore
 
                             operation = JsonConvert.DeserializeObject<OpenApiOperation>(stringBuilder.ToString());
                             operation.Parameters.Clear(); // clear because parameters are added by the generator
-                       }
+                        }
 #endif
 
                         operation.IsDeprecated = IsOperationDeprecated(item.Item1, apiDescription.ActionDescriptor, method);
@@ -277,7 +269,7 @@ namespace NSwag.Generation.AspNetCore
                     }
 
                     var addedOperations = AddOperationDescriptionsToDocument(document, controllerType, operations, generator, schemaResolver);
-                    if (addedOperations.Any() && apiGroup.Key != null)
+                    if (addedOperations.Count > 0 && apiGroup.Key != null)
                     {
                         usedControllerTypes.Add(apiGroup.Key);
                     }
@@ -290,7 +282,7 @@ namespace NSwag.Generation.AspNetCore
             return usedControllerTypes;
         }
 
-        private bool IsOperationDeprecated(ApiDescription apiDescription, ActionDescriptor actionDescriptor, MethodInfo methodInfo)
+        private static bool IsOperationDeprecated(ApiDescription apiDescription, ActionDescriptor actionDescriptor, MethodInfo methodInfo)
         {
             if (methodInfo?.GetCustomAttribute<ObsoleteAttribute>() != null)
             {
@@ -339,12 +331,17 @@ namespace NSwag.Generation.AspNetCore
                     var path = operation.Path.Replace("//", "/");
                     if (!document.Paths.TryGetValue(path, out var pathItem))
                     {
-                        document.Paths[path] = pathItem = new OpenApiPathItem();
+                        document.Paths[path] = pathItem = [];
                     }
 
                     if (pathItem.ContainsKey(operation.Method))
                     {
-                        throw new InvalidOperationException($"The method '{operation.Method}' on path '{path}' is registered multiple times.");
+                        var conflictingApiDescriptions = operations
+                            .Where(t => t.Item1.Path == operation.Path && t.Item1.Method == operation.Method)
+                            .Select(t => t.Item2)
+                            .ToList();
+
+                        throw new InvalidOperationException($"The method '{operation.Method}' on path '{path}' is registered multiple times for actions {string.Join(", ", conflictingApiDescriptions.Select(apiDesc => apiDesc.ActionDescriptor.DisplayName))}.");
                     }
 
                     pathItem[operation.Method] = operation.Operation;
@@ -361,17 +358,21 @@ namespace NSwag.Generation.AspNetCore
         {
             // TODO: Move to SwaggerGenerator class?
 
-            document.Consumes = allOperations
+            var documentConsumes = allOperations
                 .SelectMany(s => s.Item1.Operation.Consumes)
                 .Where(m => allOperations.All(o => o.Item1.Operation.Consumes.Contains(m)))
                 .Distinct()
-                .ToArray();
+                .ToList();
 
-            document.Produces = allOperations
+            document.Consumes = documentConsumes;
+
+            var documentProduces = allOperations
                 .SelectMany(s => s.Item1.Operation.Produces)
                 .Where(m => allOperations.All(o => o.Item1.Operation.Produces.Contains(m)))
                 .Distinct()
-                .ToArray();
+                .ToList();
+
+            document.Produces = documentProduces;
 
             foreach (var operation in allOperations)
             {
@@ -379,17 +380,17 @@ namespace NSwag.Generation.AspNetCore
 
                 List<string> consumes = null;
                 if (description.Operation.Consumes.Count > 0
-                    && (document.Consumes.Count == 0 || description.Operation.Consumes.Any(c => !document.Consumes.Contains(c))))
+                    && (documentConsumes.Count == 0 || description.Operation.Consumes.Any(c => !documentConsumes.Contains(c))))
                 {
-                    consumes = description.Operation.Consumes.Distinct().ToList();
+                    consumes = [.. description.Operation.Consumes.Distinct()];
                 }
                 description.Operation.Consumes = consumes;
 
                 List<string> produces = null;
                 if (description.Operation.Produces.Count > 0
-                    && (document.Produces.Count == 0 || description.Operation.Produces.Any(c => !document.Produces.Contains(c))))
+                    && (documentProduces.Count == 0 || description.Operation.Produces.Any(c => !documentProduces.Contains(c))))
                 {
-                    produces = description.Operation.Produces.Distinct().ToList();
+                    produces = [.. description.Operation.Produces.Distinct()];
                 }
                 description.Operation.Produces = produces;
             }
@@ -411,10 +412,7 @@ namespace NSwag.Generation.AspNetCore
             document.Generator = $"NSwag{version}";
             document.SchemaType = Settings.SchemaSettings.SchemaType;
 
-            if (document.Info == null)
-            {
-                document.Info = new OpenApiInfo();
-            }
+            document.Info ??= new OpenApiInfo();
 
             if (string.IsNullOrEmpty(Settings.DocumentTemplate))
             {
@@ -447,7 +445,7 @@ namespace NSwag.Generation.AspNetCore
 
             foreach (var operationProcessor in Settings.OperationProcessors)
             {
-                if (operationProcessor.Process(operationProcessorContext) == false)
+                if (!operationProcessor.Process(operationProcessorContext))
                 {
                     return false;
                 }
@@ -468,7 +466,7 @@ namespace NSwag.Generation.AspNetCore
                         (IOperationProcessor)Activator.CreateInstance(attribute.Type, attribute.Parameters) :
                         (IOperationProcessor)Activator.CreateInstance(attribute.Type);
 
-                    if (operationProcessor.Process(operationProcessorContext) == false)
+                    if (!operationProcessor.Process(operationProcessorContext))
                     {
                         return false;
                     }
@@ -490,7 +488,7 @@ namespace NSwag.Generation.AspNetCore
             if (!string.IsNullOrWhiteSpace(httpMethod))
             {
                 var attributeName = Char.ToUpperInvariant(httpMethod[0]) + httpMethod.Substring(1).ToLowerInvariant();
-                var typeName = string.Format("Microsoft.AspNetCore.Mvc.Http{0}Attribute", attributeName);
+                var typeName = string.Format(CultureInfo.InvariantCulture, "Microsoft.AspNetCore.Mvc.Http{0}Attribute", attributeName);
                 httpAttribute = method?
                     .GetCustomAttributes()
                     .FirstAssignableToTypeNameOrDefault(typeName);
@@ -543,23 +541,24 @@ namespace NSwag.Generation.AspNetCore
                     httpMethod[0].ToString().ToUpperInvariant() + httpMethod.Substring(1) +
                     string.Join("", apiDescription.RelativePath
                         .Split('/', '\\', '}', ']', '-', '_')
-                        .Where(t => !t.StartsWith("{"))
-                        .Where(t => !t.StartsWith("["))
+                        .Where(t => !t.StartsWith('{'))
+                        .Where(t => !t.StartsWith('['))
                         .Select(t => t.Length > 1 ? t[0].ToString().ToUpperInvariant() + t.Substring(1) : t.ToUpperInvariant()));
             }
 
             var number = 1;
-            while (document.Operations.Any(o => o.Operation.OperationId == operationId + (number > 1 ? "_" + number : string.Empty)))
+            var operations = document.GetOperations().ToList();
+            while (operations.Any(o => o.Operation.OperationId == operationId + (number > 1 ? "_" + number : string.Empty)))
             {
                 number++;
             }
 
-            return operationId + (number > 1 ? number.ToString() : string.Empty);
+            return operationId + (number > 1 ? number.ToString(CultureInfo.InvariantCulture) : string.Empty);
         }
 
         private static string GetActionName(string actionName)
         {
-            if (actionName.EndsWith("Async"))
+            if (actionName.EndsWith("Async", StringComparison.Ordinal))
             {
                 actionName = actionName.Substring(0, actionName.Length - 5);
             }

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Namotion.Reflection;
+﻿using Namotion.Reflection;
 using NJsonSchema;
 using NJsonSchema.Generation;
 using NJsonSchema.NewtonsoftJson.Generation;
@@ -51,7 +50,7 @@ namespace NSwag.Generation.Tests
         {
             var parameter = GetParameter(SchemaType.Swagger2);
 
-            Assert.False(parameter.Explode);
+            Assert.Null(parameter.Explode);
             Assert.Equal(OpenApiParameterStyle.Undefined, parameter.Style);
             Assert.Equal(OpenApiParameterCollectionFormat.Multi, parameter.CollectionFormat);
         }

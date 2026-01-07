@@ -6,11 +6,7 @@
 // <author>Rico Suter, mail@rsuter.com</author>
 //-----------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
+using System.Collections.Specialized;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -29,7 +25,7 @@ namespace NSwag
     /// <summary>Describes a JSON web service.</summary>
     public partial class OpenApiDocument : JsonExtensionObject, IDocumentPathProvider
     {
-        private readonly ObservableDictionary<string, OpenApiPathItem> _paths;
+        internal readonly ObservableDictionary<string, OpenApiPathItem> _paths;
 
         /// <summary>Initializes a new instance of the <see cref="OpenApiDocument"/> class.</summary>
         public OpenApiDocument()
@@ -41,9 +37,15 @@ namespace NSwag
             var paths = new ObservableDictionary<string, OpenApiPathItem>();
             paths.CollectionChanged += (sender, args) =>
             {
-                foreach (var path in Paths.Values)
+                if (args.Action != NotifyCollectionChangedAction.Add && args.Action != NotifyCollectionChangedAction.Replace)
                 {
-                    path.ActualPathItem.Parent = this;
+                    return;
+                }
+
+                for (var i = 0; i < args.NewItems.Count; i++)
+                {
+                    var pair = (KeyValuePair<string, OpenApiPathItem>)args.NewItems[i];
+                    pair.Value.ActualPathItem.Parent = this;
                 }
             };
 
@@ -82,7 +84,7 @@ namespace NSwag
 
         /// <summary>Gets or sets the servers (OpenAPI only).</summary>
         [JsonProperty(PropertyName = "servers", Order = 10, DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
-        public ICollection<OpenApiServer> Servers { get; private set; } = new Collection<OpenApiServer>();
+        public ICollection<OpenApiServer> Servers { get; private set; } = [];
 
         /// <summary>Gets or sets the operations.</summary>
         [JsonProperty(PropertyName = "paths", Order = 11, DefaultValueHandling = DefaultValueHandling.Ignore)]
@@ -94,11 +96,11 @@ namespace NSwag
 
         /// <summary>Gets or sets a security description.</summary>
         [JsonProperty(PropertyName = "security", Order = 17, DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public ICollection<OpenApiSecurityRequirement> Security { get; set; } = new Collection<OpenApiSecurityRequirement>();
+        public ICollection<OpenApiSecurityRequirement> Security { get; set; } = [];
 
         /// <summary>Gets or sets the description.</summary>
         [JsonProperty(PropertyName = "tags", Order = 18, DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public IList<OpenApiTag> Tags { get; set; } = new Collection<OpenApiTag>();
+        public IList<OpenApiTag> Tags { get; set; } = [];
 
         /// <summary>Gets the base URL of the web service.</summary>
         [JsonIgnore]
@@ -183,14 +185,14 @@ namespace NSwag
             var match = Regex.Match(data, pattern, RegexOptions.IgnoreCase);
             if (match.Success)
             {
-                var schemaType = match.Groups["schemaType"].Value.ToLower();
-                var schemaVersion = match.Groups["schemaVersion"].Value.ToLower();
+                var schemaType = match.Groups["schemaType"].Value.ToLowerInvariant();
+                var schemaVersion = match.Groups["schemaVersion"].Value.ToLowerInvariant();
 
-                if (schemaType == "swagger" && schemaVersion.StartsWith("2"))
+                if (schemaType == "swagger" && schemaVersion.StartsWith('2'))
                 {
                     expectedSchemaType = SchemaType.Swagger2;
                 }
-                else if (schemaType == "openapi" && schemaVersion.StartsWith("3"))
+                else if (schemaType == "openapi" && schemaVersion.StartsWith('3'))
                 {
                     expectedSchemaType = SchemaType.OpenApi3;
                 }
@@ -239,21 +241,20 @@ namespace NSwag
 
         /// <summary>Gets the operations.</summary>
         [JsonIgnore]
-        public IEnumerable<OpenApiOperationDescription> Operations
+        public IEnumerable<OpenApiOperationDescription> Operations => GetOperations();
+
+        internal IEnumerable<OpenApiOperationDescription> GetOperations()
         {
-            get
+            foreach (var p in _paths)
             {
-                foreach (var p in _paths)
+                foreach (var o in p.Value.ActualPathItem)
                 {
-                    foreach (var o in p.Value.ActualPathItem)
+                    yield return new OpenApiOperationDescription
                     {
-                        yield return new OpenApiOperationDescription
-                        {
-                            Path = p.Key,
-                            Method = o.Key,
-                            Operation = o.Value
-                        };
-                    }
+                        Path = p.Key,
+                        Method = o.Key,
+                        Operation = o.Value
+                    };
                 }
             }
         }
@@ -261,29 +262,109 @@ namespace NSwag
         /// <summary>Generates missing or non-unique operation IDs.</summary>
         public void GenerateOperationIds()
         {
-            // Generate missing IDs
-            var operationsList = Operations.ToList();
+            // start with new work buffers
+            GenerateOperationIds([.. GetOperations()], [], []);
+        }
 
-            foreach (var operation in operationsList.Where(o => string.IsNullOrEmpty(o.Operation.OperationId)))
+        /// <summary>Generates missing or non-unique operation IDs.</summary>
+        private static void GenerateOperationIds(
+            List<OpenApiOperationDescription> operations,
+            HashSet<string> operationIds,
+            HashSet<string> duplicatedOperationIds)
+        {
+            // Generate missing IDs
+            operationIds.Clear();
+            duplicatedOperationIds.Clear();
+            foreach (var operation in operations)
             {
-                operation.Operation.OperationId = GetOperationNameFromPath(operation);
+                if (string.IsNullOrEmpty(operation.Operation.OperationId))
+                {
+                    operation.Operation.OperationId = GetOperationNameFromPath(operation);
+                }
+
+                if (!operationIds.Add(operation.Operation.OperationId))
+                {
+                    duplicatedOperationIds.Add(operation.Operation.OperationId);
+                }
+            }
+
+            // if we don't have any duplicates, we are done
+            if (duplicatedOperationIds.Count == 0)
+            {
+                return;
             }
 
             // Find non-unique operation IDs
-            // Append numbers as last resort
-            foreach (var group in operationsList.GroupBy(o => o.Operation.OperationId))
+            operations = [.. operations.Where(x => duplicatedOperationIds.Contains(x.Operation.OperationId))];
+
+            // 1: Append all to methods returning collections
+            foreach (var group in operations.GroupBy(o => o.Operation.OperationId))
             {
                 var operations = group.ToList();
                 if (group.Count() > 1)
                 {
+                    var collections = group.Where(o => o.Operation.HasActualResponse(static (code, response) =>
+                              HttpUtilities.IsSuccessStatusCode(code) &&
+                              response.Schema?.ActualSchema.Type == JsonObjectType.Array));
+                    // if we have just collections, adding All will not help in discrimination
+                    if (collections.Count() == group.Count())
+                    {
+                        continue;
+                    }
+
+                    foreach (var o in group)
+                    {
+                        var isCollection = o.Operation.HasActualResponse(static (code, response) =>
+                            HttpUtilities.IsSuccessStatusCode(code) &&
+                            response.Schema?.ActualSchema.Type == JsonObjectType.Array);
+
+            if (isCollection)
+            {
+                operationId = "all-" + operationId;
+                operationId = operationId.Pluralize(inputIsKnownToBeSingular: false);
+            }
+
+            var isFind = operation.Operation.ActualParameters.Any(
+                p =>  p.Name.ToUpper().Contains("ID")
+                && (p.Kind == OpenApiParameterKind.Path 
+                || p.Kind == OpenApiParameterKind.Query));
+
+            var isParameterFind = operation.Operation.ActualParameters.Any(
+                p => p.Name.ToUpper().Contains("ID")
+               && p.Kind == OpenApiParameterKind.Query);
+
+            // 2: Append the Method type
+            foreach (var group in operations.GroupBy(o => o.Operation.OperationId))
+            {
+                if (group.Count() > 1)
+                {
+                    var methods = group.Select(o => o.Method.ToUpperInvariant()).Distinct();
+                    if (methods.Count() == 1)
+                    {
+                        continue;
+                    }
+
+                    foreach (var o in group)
+                    {
+                        o.Operation.OperationId += o.Method.ToUpperInvariant();
+                    }
+                }
+            }
+
+            // 3: Append numbers as last resort
+            foreach (var group in operations.GroupBy(o => o.Operation.OperationId))
+            {
+                var groupOperations = group.ToList();
+                if (group.Count() > 1)
+                {
                     // Add numbers
                     var i = 2;
-                    foreach (var operation in operations.Skip(1))
+                    foreach (var operation in groupOperations.Skip(1))
                     {
                         operation.Operation.OperationId += i++;
                     }
 
-                    GenerateOperationIds();
+                    GenerateOperationIds(operations, operationIds, duplicatedOperationIds);
                     return;
                 }
             }
@@ -294,18 +375,18 @@ namespace NSwag
             var pathSegments = operation.Path.Trim('/').Split('/').ToList();
             pathSegments = pathSegments.Where(s => !s.Contains("{") && !s.ToLower().Contains("api")).ToList();
 
-            var versionPath = pathSegments.FirstOrDefault(s => 
+            var versionPath = pathSegments.FirstOrDefault(s =>
                 new Regex("(v[0-9])+", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).IsMatch(s));
 
             if (!string.IsNullOrEmpty(versionPath))
-            { 
+            {
                 pathSegments.Remove(versionPath);
                 versionPath = "-" + versionPath;
             }
 
             pathSegments = pathSegments.Select(
-                s => s.ToLower().EndsWith("data") 
-                ? s 
+                s => s.ToLower().EndsWith("data")
+                ? s
                 : s.Singularize(inputIsKnownToBePlural: false)).ToList();
 
             var operationId = string.Join("-", pathSegments);
@@ -322,8 +403,8 @@ namespace NSwag
             }
 
             var isFind = operation.Operation.ActualParameters.Any(
-                p =>  p.Name.ToUpper().Contains("ID")
-                && (p.Kind == OpenApiParameterKind.Path 
+                p => p.Name.ToUpper().Contains("ID")
+                && (p.Kind == OpenApiParameterKind.Path
                 || p.Kind == OpenApiParameterKind.Query));
 
             var isParameterFind = operation.Operation.ActualParameters.Any(

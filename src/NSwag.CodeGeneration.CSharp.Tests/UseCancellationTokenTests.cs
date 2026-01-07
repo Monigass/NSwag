@@ -1,11 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using NJsonSchema.Generation;
+﻿using Microsoft.AspNetCore.Mvc;
 using NJsonSchema.NewtonsoftJson.Generation;
 using NSwag.CodeGeneration.CSharp.Models;
+using NSwag.CodeGeneration.Tests;
 using NSwag.Generation.WebApi;
-using Xunit;
 
 namespace NSwag.CodeGeneration.CSharp.Tests
 {
@@ -44,10 +41,8 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             var code = codeGen.GenerateFile();
 
             // Assert
-            Assert.Contains("(System.Threading.CancellationToken cancellationToken)", code);
-            Assert.Contains("_implementation.BarAsync(cancellationToken)", code);
-            Assert.Contains("System.Threading.Tasks.Task BarAsync(" +
-                "System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))", code);
+            await VerifyHelper.Verify(code);
+            CSharpCompiler.AssertCompile(code);
         }
 
         [Fact]
@@ -68,11 +63,8 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             var code = codeGen.GenerateFile();
 
             // Assert
-            Assert.Contains("System.Threading.Tasks.Task<string> FooAsync(string test, bool test2, " +
-                "System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))", code);
-            Assert.Contains("_implementation.FooAsync(test, test2, cancellationToken);", code);
-            Assert.Contains("public System.Threading.Tasks.Task<string> Foo([Microsoft.AspNetCore.Mvc.FromQuery] string test, [Microsoft.AspNetCore.Mvc.FromQuery] bool test2, " +
-                "System.Threading.CancellationToken cancellationToken)", code);
+            await VerifyHelper.Verify(code);
+            CSharpCompiler.AssertCompile(code);
         }
 
         [Fact]
@@ -95,8 +87,8 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             var code = codeGen.GenerateFile();
 
             // Assert
-            Assert.Contains("abstract System.Threading.Tasks.Task Bar(" +
-                "System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))", code);
+            await VerifyHelper.Verify(code);
+            CSharpCompiler.AssertCompile(code);
         }
 
         [Fact]
@@ -119,8 +111,8 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             var code = codeGen.GenerateFile();
 
             // Assert
-            Assert.Contains("System.Threading.Tasks.Task<string> Foo([Microsoft.AspNetCore.Mvc.FromQuery] string test, [Microsoft.AspNetCore.Mvc.FromQuery] bool test2, " +
-                "System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))", code);
+            await VerifyHelper.Verify(code);
+            CSharpCompiler.AssertCompile(code);
         }
 
         [Fact]
@@ -142,7 +134,8 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             var code = codeGen.GenerateFile();
 
             // Assert
-            Assert.DoesNotContain("System.Threading.CancellationToken cancellationToken", code);
+            await VerifyHelper.Verify(code);
+            CSharpCompiler.AssertCompile(code);
         }
     }
 }

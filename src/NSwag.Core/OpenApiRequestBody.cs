@@ -6,7 +6,7 @@
 // <author>Rico Suter, mail@rsuter.com</author>
 //-----------------------------------------------------------------------
 
-using System.Collections.Generic;
+using System.Collections.Specialized;
 using Newtonsoft.Json;
 using NJsonSchema.References;
 using NSwag.Collections;
@@ -20,6 +20,7 @@ namespace NSwag
         private bool _isRequired;
         private string _description;
         private int? _position;
+        internal readonly ObservableDictionary<string, OpenApiMediaType> _content;
 
         /// <summary>Initializes a new instance of the <see cref="OpenApiRequestBody"/> class.</summary>
         public OpenApiRequestBody()
@@ -27,14 +28,33 @@ namespace NSwag
             var content = new ObservableDictionary<string, OpenApiMediaType>();
             content.CollectionChanged += (sender, args) =>
             {
-                foreach (var mediaType in content.Values)
+                if (args.Action != NotifyCollectionChangedAction.Add && args.Action != NotifyCollectionChangedAction.Replace)
                 {
-                    mediaType.Parent = this;
+                    return;
+                }
+
+                for (var i = 0; i < args.NewItems.Count; i++)
+                {
+                    var pair = (KeyValuePair<string, OpenApiMediaType>)args.NewItems[i];
+                    pair.Value.Parent = this;
                 }
 
                 ParentOperation?.UpdateBodyParameter();
             };
-            Content = content;
+
+            _content = content;
+        }
+
+        /// <summary>Gets or sets the referenced object.</summary>
+        [JsonIgnore]
+        public override OpenApiRequestBody Reference
+        {
+            get => base.Reference;
+            set
+            {
+                base.Reference = value;
+                ParentOperation?.UpdateBodyParameter();
+            }
         }
 
         [JsonIgnore]
@@ -73,7 +93,7 @@ namespace NSwag
 
         /// <summary>Gets or sets the descriptions of potential response payloads (OpenApi only).</summary>
         [JsonProperty(PropertyName = "content", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        public IDictionary<string, OpenApiMediaType> Content { get; }
+        public IDictionary<string, OpenApiMediaType> Content => _content;
 
         /// <summary>Gets or sets the example's external value.</summary>
         [JsonProperty(PropertyName = "required", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
@@ -102,7 +122,7 @@ namespace NSwag
         /// <summary>Gets the actual name of the request body parameter.</summary>
         [JsonIgnore]
         public string ActualName => string.IsNullOrEmpty(Name) ? "body" : Name;
- 
+
         #region Implementation of IJsonReference
 
         [JsonIgnore]

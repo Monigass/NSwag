@@ -30,8 +30,8 @@ namespace NSwag.Commands.CodeGeneration
         [Argument(Name = "TemplateDirectory", IsRequired = false, Description = "The Liquid template directory (experimental).")]
         public string TemplateDirectory
         {
-            get { return Settings.CodeGeneratorSettings.TemplateDirectory; }
-            set { Settings.CodeGeneratorSettings.TemplateDirectory = value; }
+            get => Settings.CodeGeneratorSettings.TemplateDirectory;
+            set => Settings.CodeGeneratorSettings.TemplateDirectory = value;
         }
 
         [Argument(Name = "TypeNameGenerator", IsRequired = false, Description = "The custom ITypeNameGenerator implementation type in the form 'assemblyName:fullTypeName' or 'fullTypeName').")]

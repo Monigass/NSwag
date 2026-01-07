@@ -1,9 +1,6 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using NJsonSchema;
+﻿using NJsonSchema;
 using NJsonSchema.NewtonsoftJson.Generation;
 using NSwag.Generation.AspNetCore.Tests.Web.Controllers.Parameters;
-using Xunit;
 
 namespace NSwag.Generation.AspNetCore.Tests.Parameters
 {
@@ -21,7 +18,7 @@ namespace NSwag.Generation.AspNetCore.Tests.Parameters
             // Assert
             var operation = document.Operations.First(o => o.Operation.OperationId == "BodyParameters_RequiredPrimitive").Operation;
 
-            Assert.True(operation.ActualParameters.First().IsRequired);
+            Assert.True(operation.ActualParameters[0].IsRequired);
         }
 
         [Fact(
@@ -46,7 +43,7 @@ namespace NSwag.Generation.AspNetCore.Tests.Parameters
             // Assert
             var operation = document.Operations.First(o => o.Operation.OperationId == "BodyParameters_RequiredPrimitiveWithDefault").Operation;
 
-            Assert.False(operation.ActualParameters.First().IsRequired);
+            Assert.False(operation.ActualParameters[0].IsRequired);
         }
 
         [Fact(
@@ -65,7 +62,7 @@ namespace NSwag.Generation.AspNetCore.Tests.Parameters
             // Assert
             var operation = document.Operations.First(o => o.Operation.OperationId == "BodyParameters_RequiredPrimitiveWithDefault").Operation;
 
-            Assert.True(operation.ActualParameters.First().IsRequired);
+            Assert.True(operation.ActualParameters[0].IsRequired);
         }
 
         [Fact]
@@ -80,7 +77,7 @@ namespace NSwag.Generation.AspNetCore.Tests.Parameters
             // Assert
             var operation = document.Operations.First(o => o.Operation.OperationId == "BodyParameters_RequiredComplex").Operation;
 
-            Assert.True(operation.ActualParameters.First().IsRequired);
+            Assert.True(operation.ActualParameters[0].IsRequired);
         }
 
         [Fact(
@@ -99,7 +96,7 @@ namespace NSwag.Generation.AspNetCore.Tests.Parameters
             // Assert
             var operation = document.Operations.First(o => o.Operation.OperationId == "BodyParameters_RequiredComplexWithDefault").Operation;
 
-            Assert.False(operation.ActualParameters.First().IsRequired);
+            Assert.False(operation.ActualParameters[0].IsRequired);
         }
 
         [Fact(
@@ -118,7 +115,7 @@ namespace NSwag.Generation.AspNetCore.Tests.Parameters
             // Assert
             var operation = document.Operations.First(o => o.Operation.OperationId == "BodyParameters_RequiredComplexWithDefault").Operation;
 
-            Assert.True(operation.ActualParameters.First().IsRequired);
+            Assert.True(operation.ActualParameters[0].IsRequired);
         }
     }
 }

@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using NJsonSchema.Generation;
 using NJsonSchema.NewtonsoftJson.Generation;
 using NSwag.CodeGeneration.OperationNameGenerators;
 using NSwag.Generation.WebApi;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Xunit;
+using NSwag.CodeGeneration.Tests;
 
 namespace NSwag.CodeGeneration.CSharp.Tests
 {
@@ -54,7 +52,8 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             var code = codeGen.GenerateFile();
 
             // Assert
-            Assert.DoesNotContain("throw new System.ArgumentNullException(\"body\")", code);
+            await VerifyHelper.Verify(code);
+            CSharpCompiler.AssertCompile(code);
         }
 
         [Fact]
@@ -67,8 +66,7 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             var code = generator.GenerateFile();
 
             // Assert
-            Assert.Contains("throw new System.ArgumentNullException(\"requiredBody\")", code);
-            Assert.DoesNotContain("throw new System.ArgumentNullException(\"notRequiredBody\")", code);
+            await VerifyHelper.Verify(code);
         }
 
         [Fact]
@@ -81,8 +79,7 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             var code = generator.GenerateFile();
 
             // Assert
-            Assert.Contains("throw new System.ArgumentNullException(\"requiredBody\")", code);
-            Assert.Contains("throw new System.ArgumentNullException(\"notRequiredBody\")", code);
+            await VerifyHelper.Verify(code);
         }
 
         private static async Task<CSharpClientGenerator> GenerateCode(bool allowNullableBodyParameters)

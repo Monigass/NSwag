@@ -5,19 +5,15 @@ using System.Xml.Linq;
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Locator;
 using Nuke.Common;
+using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
-using Nuke.Common.Tools.MSBuild;
-using Nuke.Common.Tools.Npm;
+using Nuke.Common.Utilities;
 using Nuke.Common.Utilities.Collections;
-
-using static Nuke.Common.IO.FileSystemTasks;
-using static Nuke.Common.Tools.Chocolatey.ChocolateyTasks;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
-using static Nuke.Common.Tools.MSBuild.MSBuildTasks;
 using static Nuke.Common.Tools.Npm.NpmTasks;
 using Project = Nuke.Common.ProjectModel.Project;
 
@@ -126,18 +122,6 @@ partial class Build : NukeBuild
             ArtifactsDirectory.CreateOrCleanDirectory();
         });
 
-    Target InstallDependencies => _ => _
-        .Before(Restore, Compile)
-        .OnlyWhenDynamic(() => !IsServerBuild)
-        .Executes(() =>
-        {
-            Chocolatey("install wixtoolset -y");
-            NpmInstall(x => x
-                .EnableGlobal()
-                .AddPackages("dotnettools")
-            );
-        });
-
     Target Restore => _ => _
         .Executes(() =>
         {
@@ -145,9 +129,14 @@ partial class Build : NukeBuild
                 .SetProcessWorkingDirectory(SourceDirectory / "NSwag.Npm")
             );
 
+            NpmInstall(x => x
+                .SetProcessWorkingDirectory(GetProject("NSwag.CodeGeneration.TypeScript.Tests").Directory)
+            );
+
             DotNetRestore(x => x
                 .SetProjectFile(SolutionFile)
                 .SetVerbosity(DotNetVerbosity.minimal)
+                .AddProperty("BuildWithNetFrameworkHostedCompiler", "true")
             );
         });
 
@@ -161,59 +150,21 @@ partial class Build : NukeBuild
 
             Serilog.Log.Information("Build and copy full .NET command line with configuration {Configuration}", Configuration);
 
-            if (IsRunningOnWindows)
-            {
-                DotNetMSBuild(x => x
-                    .SetTargetPath(GetProject("NSwagStudio"))
-                    .SetAssemblyVersion(VersionPrefix)
-                    .SetFileVersion(VersionPrefix)
-                    .SetInformationalVersion(VersionPrefix)
-                    .SetConfiguration(Configuration)
-                    .SetMaxCpuCount(Environment.ProcessorCount)
-                    .SetNodeReuse(IsLocalBuild)
-                    .SetVerbosity(DotNetVerbosity.minimal)
-                    .SetDeterministic(IsServerBuild)
-                    .SetContinuousIntegrationBuild(IsServerBuild)
-                    // ensure we don't generate too much output in CI run
-                    // 0  Turns off emission of all warning messages
-                    // 1  Displays severe warning messages
-                    .SetWarningLevel(IsServerBuild ? 0 : 1)
-                );
-
-                MSBuild(x => x
-                    .SetTargetPath(SolutionFile)
-                    .SetAssemblyVersion(VersionPrefix)
-                    .SetFileVersion(VersionPrefix)
-                    .SetInformationalVersion(VersionPrefix)
-                    .SetConfiguration(Configuration)
-                    .SetMaxCpuCount(Environment.ProcessorCount)
-                    .SetNodeReuse(IsLocalBuild)
-                    .SetVerbosity(MSBuildVerbosity.Minimal)
-                    .SetProperty("Deterministic", IsServerBuild)
-                    .SetProperty("ContinuousIntegrationBuild", IsServerBuild)
-                    // ensure we don't generate too much output in CI run
-                    // 0  Turns off emission of all warning messages
-                    // 1  Displays severe warning messages
-                    .SetWarningLevel(IsServerBuild ? 0 : 1)
-                );
-            }
-            else
-            {
-                DotNetBuild(x => x
-                    .SetProjectFile(SolutionFile)
-                    .SetAssemblyVersion(VersionPrefix)
-                    .SetFileVersion(VersionPrefix)
-                    .SetInformationalVersion(VersionPrefix)
-                    .SetConfiguration(Configuration)
-                    .SetVerbosity(DotNetVerbosity.minimal)
-                    .SetDeterministic(IsServerBuild)
-                    .SetContinuousIntegrationBuild(IsServerBuild)
-                    // ensure we don't generate too much output in CI run
-                    // 0  Turns off emission of all warning messages
-                    // 1  Displays severe warning messages
-                    .SetWarningLevel(IsServerBuild ? 0 : 1)
-                );
-            }
+            DotNetBuild(x => x
+                .SetProjectFile(SolutionFile)
+                .SetAssemblyVersion(VersionPrefix)
+                .SetFileVersion(VersionPrefix)
+                .SetInformationalVersion(VersionPrefix)
+                .SetConfiguration(Configuration)
+                .SetVerbosity(DotNetVerbosity.minimal)
+                .SetDeterministic(IsServerBuild)
+                .SetContinuousIntegrationBuild(IsServerBuild)
+                // ensure we don't generate too much output in CI run
+                // 0  Turns off emission of all warning messages
+                // 1  Displays severe warning messages
+                .SetWarningLevel(IsServerBuild ? 0 : 1)
+                .EnableNoRestore()
+            );
 
             // later steps need to have binaries in correct places
             PublishAndCopyConsoleProjects();
@@ -230,6 +181,7 @@ partial class Build : NukeBuild
                     .EnableNoRestore()
                     .EnableNoBuild()
                     .SetConfiguration(Configuration)
+                    .When(GitHubActions.Instance is not null, x => x.SetLoggers("GitHubActions"))
                 );
             }
         });
@@ -259,6 +211,8 @@ partial class Build : NukeBuild
                     // 0  Turns off emission of all warning messages
                     // 1  Displays severe warning messages
                     .SetWarningLevel(IsServerBuild ? 0 : 1)
+                    .EnableNoRestore()
+                    .EnableNoBuild()
                 );
             }
         }
@@ -268,7 +222,7 @@ partial class Build : NukeBuild
             PublishConsoleProject(consoleX86Project, ["net462"]);
             PublishConsoleProject(consoleProject, ["net462"]);
         }
-        PublishConsoleProject(consoleCoreProject, ["net6.0", "net8.0"]);
+        PublishConsoleProject(consoleCoreProject, ["net8.0", "net9.0", "net10.0"]);
 
         void CopyConsoleBinaries(AbsolutePath target)
         {
@@ -278,14 +232,15 @@ partial class Build : NukeBuild
             if (IsRunningOnWindows)
             {
                 var consoleX86Directory = ArtifactsDirectory / "publish" / consoleX86Project.Name / configuration;
-                CopyFileToDirectory(consoleX86Directory / "NSwag.x86.exe", target / "Win");
-                CopyFileToDirectory(consoleX86Directory / "NSwag.x86.exe.config", target / "Win");
+                (consoleX86Directory / "NSwag.x86.exe").CopyToDirectory(target / "Win");
+                (consoleX86Directory / "NSwag.x86.exe.config").CopyToDirectory(target / "Win");
 
-                CopyDirectoryRecursively(ArtifactsDirectory / "publish" / consoleProject.Name / configuration, target / "Win", DirectoryExistsPolicy.Merge);
+                (ArtifactsDirectory / "publish" / consoleProject.Name / configuration).Copy(target / "Win", ExistsPolicy.DirectoryMerge);
             }
 
-            CopyDirectoryRecursively(ArtifactsDirectory / "publish" / consoleCoreProject.Name / (configuration + "_net6.0"), target / "Net60");
-            CopyDirectoryRecursively(ArtifactsDirectory / "publish" / consoleCoreProject.Name / (configuration + "_net8.0"), target / "Net80");
+            (ArtifactsDirectory / "publish" / consoleCoreProject.Name / (configuration + "_net8.0")).Copy(target / "Net80");
+            (ArtifactsDirectory / "publish" / consoleCoreProject.Name / (configuration + "_net9.0")).Copy(target / "Net90");
+            (ArtifactsDirectory / "publish" / consoleCoreProject.Name / (configuration + "_net10.0")).Copy(target / "Net100");
         }
 
         if (IsRunningOnWindows)

@@ -1,17 +1,15 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NJsonSchema;
-using NJsonSchema.Generation;
 using NJsonSchema.NewtonsoftJson.Generation;
+using NSwag.CodeGeneration.Tests;
 using NSwag.Generation.WebApi;
-using Xunit;
 
 namespace NSwag.CodeGeneration.CSharp.Tests
 {
     public class FormParameterTests
     {
         [Fact]
-        public void When_form_parameters_are_defined_then_MultipartFormDataContent_is_generated()
+        public async Task When_form_parameters_are_defined_then_MultipartFormDataContent_is_generated()
         {
             // Arrange
             var document = new OpenApiDocument();
@@ -49,9 +47,8 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             var code = generator.GenerateFile();
 
             // Assert
-            Assert.Contains("new System.Net.Http.MultipartFormDataContent", code);
-            Assert.Contains("if (foo != null)", code);
-            Assert.Contains("throw new System.ArgumentNullException(\"bar\");", code);
+            await VerifyHelper.Verify(code);
+            CSharpCompiler.AssertCompile(code);
         }
 
         public class FileUploadController : Controller
@@ -81,13 +78,12 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             var code = codeGen.GenerateFile();
 
             // Assert
-            Assert.Contains("FileParameter file", code);
-            Assert.Contains("var content_file_ = new System.Net.Http.StreamContent(file.Data);", code);
-            Assert.Contains("content_.Add(content_file_, \"file\", file.FileName ??", code);
+            await VerifyHelper.Verify(code);
+            CSharpCompiler.AssertCompile(code);
         }
 
         [Fact]
-        public void When_form_parameters_are_defined_then_FormUrlEncodedContent_is_generated()
+        public async Task When_form_parameters_are_defined_then_FormUrlEncodedContent_is_generated()
         {
             // Arrange
             var document = new OpenApiDocument();
@@ -97,7 +93,7 @@ namespace NSwag.CodeGeneration.CSharp.Tests
                     OpenApiOperationMethod.Post,
                     new OpenApiOperation
                     {
-                        Consumes = new System.Collections.Generic.List<string> { "application/x-www-form-urlencoded" },
+                        Consumes = ["application/x-www-form-urlencoded"],
                         Parameters =
                         {
                             new OpenApiParameter
@@ -126,9 +122,8 @@ namespace NSwag.CodeGeneration.CSharp.Tests
             var code = generator.GenerateFile();
 
             // Assert
-            Assert.Contains("new System.Net.Http.FormUrlEncodedContent", code);
-            Assert.Contains("if (foo != null)", code);
-            Assert.Contains("throw new System.ArgumentNullException(\"bar\");", code);
+            await VerifyHelper.Verify(code);
+            CSharpCompiler.AssertCompile(code);
         }
 
         // TODO: Implement for JQuery, AngularJS and Angular 2

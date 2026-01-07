@@ -9,9 +9,7 @@
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using NJsonSchema;
 using NJsonSchema.NewtonsoftJson.Generation;
-using System.Collections.Generic;
 using System.Reflection;
-using Xunit;
 
 namespace NSwag.Generation.AspNetCore.Processors.Tests
 {
@@ -141,15 +139,17 @@ namespace NSwag.Generation.AspNetCore.Processors.Tests
                 generator,
                 schemaResolver,
                 settings,
-                new List<OpenApiOperationDescription>())
+                [])
             {
                 ApiDescription = apiDescription,
             };
             return context;
         }
 
-        private class TestModel { }
+        private sealed class TestModel { }
 
+#pragma warning disable CA1822
         private TestModel SomeAction() => null;
+#pragma warning restore CA1822
     }
 }
