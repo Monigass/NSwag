@@ -5,7 +5,7 @@
             Language="1033"
             Version="!(bind.FileVersion.NSwagExe)"
             Manufacturer="Rico Suter"
-            UpgradeCode="571BBE29-70A5-4062-B478-A8BA84A7F90A"
+            UpgradeCode="{571BBE29-70A5-4062-B478-A8BA84A7F90A}"
             InstallerVersion="200">
 
         <MajorUpgrade
@@ -68,7 +68,7 @@
 
         <DirectoryRef Id="ApplicationProgramsFolder">
 
-            <Component Id="ApplicationComponent" Guid="24057D56-63A4-4330-A46C-B15A0EFF551F">
+            <Component Id="ApplicationComponent" Guid="{24057D56-63A4-4330-A46C-B15A0EFF551F}">
                 <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall" />
                 <RemoveFolder Id="ManufacturerProgramsFolder" On="uninstall" />
 

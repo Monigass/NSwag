@@ -16,7 +16,7 @@ namespace NSwag.CodeGeneration
     /// <summary>The default parameter name generator.</summary>
     public sealed class DefaultParameterNameGenerator : IParameterNameGenerator
     {
-        private static readonly char[] _parameterNameCleanupChars = ['-', '.', ':', '$', '@', '[', ']'];
+        private static readonly char[] _parameterNameCleanupChars = ['-', '.', ':', '$', '@', '[', ']', '_'];
 
 #if NET8_0_OR_GREATER
         private static readonly System.Buffers.SearchValues<char> ParameterNameCleanupChars = System.Buffers.SearchValues.Create(_parameterNameCleanupChars);
@@ -60,10 +60,10 @@ namespace NSwag.CodeGeneration
                         .Replace("@", string.Empty)
                         .Replace("[", string.Empty)
                         .Replace("]", string.Empty)
-                        .Split(new[] { "_" },
-                        .StringSplitOptions.RemoveEmptyEntries).Select(s =>
-                            char.ToUpperInvariant(s[0]) + s.Substring(1, s.Length - 1))
-                                .Aggregate(string.Empty, (s1, s2) => s1 + s2);
+                        .Split(["_"],
+                            StringSplitOptions.RemoveEmptyEntries).Select(s =>
+                                char.ToUpperInvariant(s[0]) + s.Substring(1))
+                                    .Aggregate(string.Empty, (s1, s2) => s1 + s2);
                 }
 
                 return ConversionUtilities.ConvertToLowerCamelCase(name, true);
