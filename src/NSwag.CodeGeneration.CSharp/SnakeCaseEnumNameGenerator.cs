@@ -24,7 +24,7 @@ namespace NSwag.CodeGeneration.CSharp
         /// <returns>The new name.</returns>
         public virtual string Generate(int index, string name, object value, JsonSchema schema)
         {
-            if (name.StartsWith("-"))
+            if (name.StartsWith("-", StringComparison.InvariantCultureIgnoreCase))
             {
                 name = "Minus" + name;
             }

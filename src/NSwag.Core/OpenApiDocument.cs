@@ -300,7 +300,6 @@ namespace NSwag
             // 1: Append all to methods returning collections
             foreach (var group in operations.GroupBy(o => o.Operation.OperationId))
             {
-                var operations = group.ToList();
                 if (group.Count() > 1)
                 {
                     var collections = group.Where(o => o.Operation.HasActualResponse(static (code, response) =>
@@ -318,10 +317,12 @@ namespace NSwag
                             HttpUtilities.IsSuccessStatusCode(code) &&
                             response.Schema?.ActualSchema.Type == JsonObjectType.Array);
 
-            if (isCollection)
-            {
-                operationId = "all-" + operationId;
-                operationId = operationId.Pluralize(inputIsKnownToBeSingular: false);
+                        if (isCollection)
+                        {
+                            o.Operation.OperationId += "All";
+                        }
+                    }
+                }
             }
 
             var isFind = operation.Operation.ActualParameters.Any(p => 
@@ -370,10 +371,10 @@ namespace NSwag
             }
         }
 
-        private string GetOperationNameFromPath(OpenApiOperationDescription operation)
+        private static string GetOperationNameFromPath(OpenApiOperationDescription operation)
         {
             var pathSegments = operation.Path.Trim('/').Split('/').ToList();
-            pathSegments = pathSegments.Where(s => !s.Contains("{") && !s.ToLower().Contains("api")).ToList();
+            pathSegments = [.. pathSegments.Where(s => !s.Contains('{') && !s.ToLowerInvariant().Contains("api", StringComparison.InvariantCultureIgnoreCase))];
 
             var versionPath = pathSegments.FirstOrDefault(s =>
                 new Regex("(v[0-9])+", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).IsMatch(s));
@@ -384,10 +385,10 @@ namespace NSwag
                 versionPath = "-" + versionPath;
             }
 
-            pathSegments = pathSegments.Select(
-                s => s.ToLower().EndsWith("data") 
-                ? s 
-                : s.Singularize(inputIsKnownToBePlural: false)).ToList();
+            pathSegments = [.. pathSegments.Select(
+                s => s.ToLowerInvariant().EndsWith("data", StringComparison.InvariantCultureIgnoreCase)
+                ? s
+                : s.Singularize(inputIsKnownToBePlural: false))];
 
             var operationId = string.Join("-", pathSegments);
 
@@ -402,17 +403,17 @@ namespace NSwag
                 operationId = operationId.Pluralize(inputIsKnownToBeSingular: false);
             }
 
-            var isFind = operation.Operation.ActualParameters.Any(p =>
-                p.Name.ToUpper().Contains("ID")
+            var isFind = operation.Operation.ActualParameters.Any(
+                p => p.Name.ToUpperInvariant().Contains("ID", StringComparison.InvariantCultureIgnoreCase)
                 && (p.Kind == OpenApiParameterKind.Path
                 || p.Kind == OpenApiParameterKind.Query));
 
             var isParameterFind = operation.Operation.ActualParameters.Any(
-                p => p.Name.ToUpper().Contains("ID")
+                p => p.Name.ToUpperInvariant().Contains("ID", StringComparison.InvariantCultureIgnoreCase)
                && p.Kind == OpenApiParameterKind.Query);
 
             // 2: Append the Method type
-            var method = operation.Method.ToUpper() switch
+            var method = operation.Method.ToUpperInvariant() switch
             {
                 "POST" => "sends-",
                 "GET" => !isCollection && isFind ? "finds-" : "gets-",
