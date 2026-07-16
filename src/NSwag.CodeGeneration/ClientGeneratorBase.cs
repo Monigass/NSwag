@@ -6,11 +6,9 @@
 // <author>Rico Suter, mail@rsuter.com</author>
 //-----------------------------------------------------------------------
 
-using Newtonsoft.Json.Linq;
 using NJsonSchema;
 using NJsonSchema.CodeGeneration;
 using NSwag.CodeGeneration.Models;
-using System.Runtime;
 
 namespace NSwag.CodeGeneration
 {
@@ -89,7 +87,15 @@ namespace NSwag.CodeGeneration
                     ? dtoTypes
                     : [];
 
-            return GenerateFile(clientTypes, dtoTypes, outputType)
+            var code = GenerateFile(clientTypes, dtoTypes, outputType);
+            
+            code = System.Text.RegularExpressions.Regex.Replace(
+                code,
+                 @"^([ \t]*)\[System\.Text\.Json\.Serialization\.JsonConverter\(typeof\(System\.Text\.Json\.Serialization\.JsonStringEnumConverter<[^>]+>\)\)\][ \t]*\r?\n",
+                 "$1[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumMemberConverter))]\n",
+                System.Text.RegularExpressions.RegexOptions.Multiline);
+
+            return code
                 .Replace("\r", string.Empty)
                 .Replace("\n\n\n\n", "\n\n")
                 .Replace("\n\n\n", "\n\n");

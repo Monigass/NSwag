@@ -19,7 +19,7 @@ namespace NSwag.Core.Tests.Serialization
 @"  ""paths"": {
     ""/foo"": {
       ""get"": {
-        ""operationId"": ""foo"",
+        ""operationId"": ""gets-foo"",
         ""responses"": {
           ""200"": {
             ""description"": """",
@@ -55,7 +55,7 @@ namespace NSwag.Core.Tests.Serialization
   ""paths"": {
     ""/foo"": {
       ""get"": {
-        ""operationId"": ""foo"",
+        ""operationId"": ""gets-foo"",
         ""responses"": {
           ""200"": {
             ""description"": """",
@@ -90,7 +90,7 @@ namespace NSwag.Core.Tests.Serialization
                 @"  ""paths"": {
     ""/foo"": {
       ""get"": {
-        ""operationId"": ""foo"",
+        ""operationId"": ""gets-foo"",
         ""responses"": {
           ""200"": {
             ""description"": """",
@@ -126,7 +126,7 @@ namespace NSwag.Core.Tests.Serialization
   ""paths"": {
     ""/foo"": {
       ""get"": {
-        ""operationId"": ""foo"",
+        ""operationId"": ""gets-foo"",
         ""responses"": {
           ""200"": {
             ""description"": """",

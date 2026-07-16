@@ -9,8 +9,6 @@
 using System.Collections.Specialized;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using Humanizer;
 using Newtonsoft.Json;
 using NJsonSchema;
@@ -324,15 +322,6 @@ namespace NSwag
                     }
                 }
             }
-
-            var isFind = operation.Operation.ActualParameters.Any(p => 
-                p.Name.ToUpper().Contains("ID")
-                && (p.Kind == OpenApiParameterKind.Path 
-                || p.Kind == OpenApiParameterKind.Query));
-
-            var isParameterFind = operation.Operation.ActualParameters.Any(p =>
-               p.Name.ToUpper().Contains("ID")
-               && p.Kind == OpenApiParameterKind.Query);
 
             // 2: Append the Method type
             foreach (var group in operations.GroupBy(o => o.Operation.OperationId))
