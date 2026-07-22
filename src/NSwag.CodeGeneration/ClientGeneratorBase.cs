@@ -124,7 +124,9 @@ namespace NSwag.CodeGeneration
 
             if (BaseSettings.OperationNameGenerator.SupportsMultipleClients)
             {
-                var controllerOperationsGroups = operations.GroupBy(o => o.ControllerName);
+                var controllerOperationsGroups = operations
+                    .GroupBy(o => o.ControllerName)
+                    .OrderBy(g => g.Key, StringComparer.Ordinal);
                 foreach (var controllerOperations in controllerOperationsGroups)
                 {
                     var controllerName = controllerOperations.Key;
@@ -181,9 +183,9 @@ namespace NSwag.CodeGeneration
             }
 
             var result = new List<TOperationModel>();
-            foreach (var pair in document.Paths)
+            foreach (var pair in document.Paths.OrderBy(path => path.Key, StringComparer.Ordinal))
             {
-                foreach (var p in pair.Value.ActualPathItem)
+                foreach (var p in pair.Value.ActualPathItem.OrderBy(operation => operation.Key, StringComparer.Ordinal))
                 {
                     var operation = p.Value;
  

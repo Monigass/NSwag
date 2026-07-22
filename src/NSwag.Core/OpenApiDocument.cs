@@ -243,9 +243,9 @@ namespace NSwag
 
         internal IEnumerable<OpenApiOperationDescription> GetOperations()
         {
-            foreach (var p in _paths)
+            foreach (var p in _paths.OrderBy(path => path.Key, StringComparer.Ordinal))
             {
-                foreach (var o in p.Value.ActualPathItem)
+                foreach (var o in p.Value.ActualPathItem.OrderBy(operation => operation.Key, StringComparer.Ordinal))
                 {
                     yield return new OpenApiOperationDescription
                     {
