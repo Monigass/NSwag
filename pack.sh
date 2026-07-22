@@ -1,0 +1,1 @@
+./build.cmd Compile Pack --configuration Release

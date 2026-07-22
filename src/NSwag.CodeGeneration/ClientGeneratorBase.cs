@@ -95,6 +95,12 @@ namespace NSwag.CodeGeneration
                  "$1[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumMemberConverter))]\n",
                 System.Text.RegularExpressions.RegexOptions.Multiline);
 
+            code = System.Text.RegularExpressions.Regex.Replace(
+                code,
+                @"^([ \t]*)(public enum [A-Za-z0-9_]+)",
+                "$1[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumMemberConverter))]\n$2",
+                System.Text.RegularExpressions.RegexOptions.Multiline);
+
             return code
                 .Replace("\r", string.Empty)
                 .Replace("\n\n\n\n", "\n\n")

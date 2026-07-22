@@ -79,7 +79,10 @@ public partial class Build
 
             var apiDescriptionClientNuSpec = SourceDirectory / "NSwag.ApiDescription.Client" / "NSwag.ApiDescription.Client.nuspec";
             var content = apiDescriptionClientNuSpec.ReadAllText();
-            content = content.Replace("<dependency id=\"NSwag.MSBuild\" version=\"1.0.0\" />", "<dependency id=\"NSwag.MSBuild\" version=\"" + nugetVersion + "\" />");
+            content = Regex.Replace(
+                content,
+                "<dependency id=\"Monigass\\.NSwag\\.MSBuild\" version=\"[^\"]*\" />",
+                "<dependency id=\"Monigass.NSwag.MSBuild\" version=\"" + nugetVersion + "\" />");
             apiDescriptionClientNuSpec.WriteAllText(content);
 
             var nuspecs = new[]
