@@ -18,7 +18,7 @@ public partial class Build
     string NuGetSource => "https://api.nuget.org/v3/index.json";
     [Parameter] [Secret] string NuGetApiKey;
 
-    string MyGetGetSource => "https://www.myget.org/F/nswag/api/v2/package";
+    string MyGetGetSource => "https://www.myget.org/F/monigass.nswag/api/v2/package";
     [Parameter] [Secret] string MyGetApiKey;
 
     [Parameter] [Secret] string ChocoApiKey;

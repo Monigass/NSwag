@@ -18,9 +18,9 @@
     <references />
   </metadata>
   <files>
-    <file src="NSwag.MSBuild.props" target="build" />
-    <file src="NSwag.MSBuild.props" target="buildCrossTargeting" />
-    <file src="NSwag.MSBuild.props" target="buildTransitive" />
+    <file src="Monigass.NSwag.MSBuild.props" target="build" />
+    <file src="Monigass.NSwag.MSBuild.props" target="buildCrossTargeting" />
+    <file src="Monigass.NSwag.MSBuild.props" target="buildTransitive" />
 
     <file src="..\..\artifacts\publish\NSwag.Console\$configuration$\*" target="tools/Win" />
     <file src="..\..\artifacts\publish\NSwag.Console.x86\$configuration$\NSwag.AspNetCore.Launcher.x86.exe" target="tools/Win" />
