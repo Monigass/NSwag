@@ -3,15 +3,15 @@
   <metadata>
     <id>Monigass.NSwag.MSBuild</id>
     <version>1.0.0</version>
-    <authors>Rico Suter</authors>
+    <authors>Monigass</authors>
     <owners>Rico Suter</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
     <projectUrl>https://github.com/Monigass/NSwag</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/RicoSuter/NSwag/master/assets/NuGetIcon.png</iconUrl>
-    <description>NSwag: The OpenAPI/Swagger API toolchain for .NET and TypeScript</description>
+    <iconUrl>https://raw.githubusercontent.com/Monigass/NSwag/master/assets/NuGetIcon.png</iconUrl>
+    <description>Fork of NSwag originally created by Rico Suter. NSwag: The OpenAPI/Swagger API toolchain for .NET and TypeScript</description>
     <tags>OpenAPI Swagger AspNetCore Documentation CodeGen TypeScript WebApi AspNet</tags>
-    <copyright>Copyright © Rico Suter, 2026</copyright>
+    <copyright>Copyright © Monigass, 2026</copyright>
     <repository type="git" url="https://github.com/Monigass/NSwag.git"/>
     <developmentDependency>true</developmentDependency>
     <dependencies />

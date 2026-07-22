@@ -2,10 +2,10 @@
   <PropertyGroup>
     <VersionPrefix>14.7.1</VersionPrefix>
 
-    <Authors>Rico Suter</Authors>
-    <Copyright>Copyright © Rico Suter, 2026</Copyright>
+    <authors>Monigass</authors>
+    <Copyright>Copyright © Monigass, 2026</Copyright>
 
-    <Description>NSwag: The OpenAPI/Swagger API toolchain for .NET and TypeScript</Description>
+    <Description>Fork of NSwag originally created by Rico Suter. NSwag: The OpenAPI/Swagger API toolchain for .NET and TypeScript</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>http://NSwag.org</PackageProjectUrl>
     <PackageTags>OpenAPI Swagger AspNetCore Documentation CodeGen TypeScript WebApi AspNet</PackageTags>
@@ -16,7 +16,7 @@
     <AssemblyOriginatorKeyFile>../NSwag.snk</AssemblyOriginatorKeyFile>
 
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/RicoSuter/NSwag.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Monigass/NSwag.git</RepositoryUrl>
 
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>

@@ -56,7 +56,7 @@ namespace NSwag.Core.Tests
         [Fact]
         public async Task When_locale_is_not_english_then_types_are_correctly_serialized()
         {
-            // https://github.com/RicoSuter/NSwag/issues/518
+            // https://github.com/Monigass/NSwag/issues/518
 
             // Arrange
             CultureInfo ci = new CultureInfo("tr-TR");

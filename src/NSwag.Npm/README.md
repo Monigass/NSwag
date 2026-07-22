@@ -3,7 +3,7 @@ NSwag is a Swagger 2.0 API (OpenAPI) toolchain for .NET, Web API, TypeScript (jQ
 **This NPM module requires Full .NET Framework 4.6.2+ or .NET 6.0+ to be installed on your system!**
 
 - [More information about NSwag](http://nswag.org)
-- [More information about the available commands](https://github.com/RicoSuter/NSwag/wiki/CommandLine)
+- [More information about the available commands](https://github.com/Monigass/NSwag/wiki/CommandLine)
 
 ## Usage
 
