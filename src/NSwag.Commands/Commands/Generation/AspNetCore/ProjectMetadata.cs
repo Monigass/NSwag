@@ -245,7 +245,7 @@ namespace NSwag.Commands.Generation.AspNetCore
                     RedirectStandardError = true
                 });
 
-                process.WaitForExit(10000);
+                process.WaitForExit(60000);
 
                 if (process.ExitCode == 0)
                 {
