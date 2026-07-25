@@ -48847,85 +48847,6 @@ export class Client {
     }
 }
 
-export class AddonPropertiesResource_getAddonPropertiesClient {
-    baseUrl: string;
-    beforeSend: any = undefined;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(baseUrl?: string) {
-        this.baseUrl = baseUrl ?? "https://your-domain.atlassian.net";
-    }
-
-    /**
-     * Get app properties
-     * @param addonKey The key of the app, as defined in its descriptor.
-     * @return Returned if the request is successful.
-     */
-    get(addonKey: string) {
-        return new Promise<PropertyKeys>((resolve, reject) => {
-            this.getWithCallbacks(addonKey, (result) => resolve(result), (exception, _reason) => reject(exception));
-        });
-    }
-
-    private getWithCallbacks(addonKey: string, onSuccess?: (result: PropertyKeys) => void, onFail?: (exception: OperationMessage | string, reason: string) => void) {
-        let url_ = this.baseUrl + "/rest/atlassian-connect/1/addons/{addonKey}/properties";
-        if (addonKey === undefined || addonKey === null)
-            throw new globalThis.Error("The parameter 'addonKey' must be defined.");
-        url_ = url_.replace("{addonKey}", encodeURIComponent("" + addonKey));
-        url_ = url_.replace(/[?&]$/, "");
-
-        jQuery.ajax({
-            url: url_,
-            beforeSend: this.beforeSend,
-            type: "get",
-            dataType: "text",
-            headers: {
-                "Accept": "application/json"
-            }
-        }).done((_data, _textStatus, xhr) => {
-            this.processGetWithCallbacks(url_, xhr, onSuccess, onFail);
-        }).fail((xhr) => {
-            this.processGetWithCallbacks(url_, xhr, onSuccess, onFail);
-        });
-    }
-
-    private processGetWithCallbacks(_url: string, xhr: any, onSuccess?: any, onFail?: any): void {
-        try {
-            let result = this.processGet(xhr);
-            if (onSuccess !== undefined)
-                onSuccess(result);
-        } catch (e) {
-            if (onFail !== undefined)
-                onFail(e, "http_service_exception");
-        }
-    }
-
-    protected processGet(xhr: any): PropertyKeys | null {
-        const status = xhr.status;
-
-        let _headers: any = {};
-        if (status === 200) {
-            const _responseText = xhr.responseText;
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PropertyKeys.fromJS(resultData200);
-            return result200;
-
-        } else if (status === 401) {
-            const _responseText = xhr.responseText;
-            let result401: any = null;
-            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result401 = OperationMessage.fromJS(resultData401);
-            return throwException("Returned if the authentication credentials are incorrect or missing.", status, _responseText, _headers, result401);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = xhr.responseText;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return null;
-    }
-}
-
 export class AddonPropertiesResource_deleteAddonPropertyClient {
     baseUrl: string;
     beforeSend: any = undefined;
@@ -49016,6 +48937,85 @@ export class AddonPropertiesResource_deleteAddonPropertyClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return;
+    }
+}
+
+export class AddonPropertiesResource_getAddonPropertiesClient {
+    baseUrl: string;
+    beforeSend: any = undefined;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string) {
+        this.baseUrl = baseUrl ?? "https://your-domain.atlassian.net";
+    }
+
+    /**
+     * Get app properties
+     * @param addonKey The key of the app, as defined in its descriptor.
+     * @return Returned if the request is successful.
+     */
+    get(addonKey: string) {
+        return new Promise<PropertyKeys>((resolve, reject) => {
+            this.getWithCallbacks(addonKey, (result) => resolve(result), (exception, _reason) => reject(exception));
+        });
+    }
+
+    private getWithCallbacks(addonKey: string, onSuccess?: (result: PropertyKeys) => void, onFail?: (exception: OperationMessage | string, reason: string) => void) {
+        let url_ = this.baseUrl + "/rest/atlassian-connect/1/addons/{addonKey}/properties";
+        if (addonKey === undefined || addonKey === null)
+            throw new globalThis.Error("The parameter 'addonKey' must be defined.");
+        url_ = url_.replace("{addonKey}", encodeURIComponent("" + addonKey));
+        url_ = url_.replace(/[?&]$/, "");
+
+        jQuery.ajax({
+            url: url_,
+            beforeSend: this.beforeSend,
+            type: "get",
+            dataType: "text",
+            headers: {
+                "Accept": "application/json"
+            }
+        }).done((_data, _textStatus, xhr) => {
+            this.processGetWithCallbacks(url_, xhr, onSuccess, onFail);
+        }).fail((xhr) => {
+            this.processGetWithCallbacks(url_, xhr, onSuccess, onFail);
+        });
+    }
+
+    private processGetWithCallbacks(_url: string, xhr: any, onSuccess?: any, onFail?: any): void {
+        try {
+            let result = this.processGet(xhr);
+            if (onSuccess !== undefined)
+                onSuccess(result);
+        } catch (e) {
+            if (onFail !== undefined)
+                onFail(e, "http_service_exception");
+        }
+    }
+
+    protected processGet(xhr: any): PropertyKeys | null {
+        const status = xhr.status;
+
+        let _headers: any = {};
+        if (status === 200) {
+            const _responseText = xhr.responseText;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PropertyKeys.fromJS(resultData200);
+            return result200;
+
+        } else if (status === 401) {
+            const _responseText = xhr.responseText;
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = OperationMessage.fromJS(resultData401);
+            return throwException("Returned if the authentication credentials are incorrect or missing.", status, _responseText, _headers, result401);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = xhr.responseText;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return null;
     }
 }
 
@@ -49217,7 +49217,7 @@ export class AddonPropertiesResource_putAddonPropertyClient {
     }
 }
 
-export class DynamicModulesResource_removeModulesClient {
+export class AppIssueFieldValueUpdateResource_updateIssueFieldsClient {
     baseUrl: string;
     beforeSend: any = undefined;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -49227,43 +49227,43 @@ export class DynamicModulesResource_removeModulesClient {
     }
 
     /**
-     * Remove modules
-     * @param moduleKey (optional) The key of the module to remove. To include multiple module keys, provide multiple copies of this parameter.
-    For example, `moduleKey=dynamic-attachment-entity-property&moduleKey=dynamic-select-field`.
-    Nonexistent keys are ignored.
+     * Bulk update custom field value
+     * @param atlassianTransferId The ID of the transfer.
      * @return Returned if the request is successful.
      */
-    delete(moduleKey?: string[] | undefined) {
-        return new Promise<void>((resolve, reject) => {
-            this.deleteWithCallbacks(moduleKey, (result) => resolve(result), (exception, _reason) => reject(exception));
+    put(atlassianTransferId: string, body: ConnectCustomFieldValues) {
+        return new Promise<any>((resolve, reject) => {
+            this.putWithCallbacks(atlassianTransferId, body, (result) => resolve(result), (exception, _reason) => reject(exception));
         });
     }
 
-    private deleteWithCallbacks(moduleKey: string[] | undefined, onSuccess?: (result: void) => void, onFail?: (exception: ErrorMessage | string, reason: string) => void) {
-        let url_ = this.baseUrl + "/rest/atlassian-connect/1/app/module/dynamic?";
-        if (moduleKey === null)
-            throw new globalThis.Error("The parameter 'moduleKey' cannot be null.");
-        else if (moduleKey !== undefined)
-            moduleKey && moduleKey.forEach(item => { url_ += "moduleKey=" + encodeURIComponent("" + item) + "&"; });
+    private putWithCallbacks(atlassianTransferId: string, body: ConnectCustomFieldValues, onSuccess?: (result: any) => void, onFail?: (exception: string, reason: string) => void) {
+        let url_ = this.baseUrl + "/rest/atlassian-connect/1/migration/field";
         url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
 
         jQuery.ajax({
             url: url_,
             beforeSend: this.beforeSend,
-            type: "delete",
+            type: "put",
+            data: content_,
             dataType: "text",
             headers: {
+                "Atlassian-Transfer-Id": atlassianTransferId !== undefined && atlassianTransferId !== null ? "" + atlassianTransferId : "",
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             }
         }).done((_data, _textStatus, xhr) => {
-            this.processDeleteWithCallbacks(url_, xhr, onSuccess, onFail);
+            this.processPutWithCallbacks(url_, xhr, onSuccess, onFail);
         }).fail((xhr) => {
-            this.processDeleteWithCallbacks(url_, xhr, onSuccess, onFail);
+            this.processPutWithCallbacks(url_, xhr, onSuccess, onFail);
         });
     }
 
-    private processDeleteWithCallbacks(_url: string, xhr: any, onSuccess?: any, onFail?: any): void {
+    private processPutWithCallbacks(_url: string, xhr: any, onSuccess?: any, onFail?: any): void {
         try {
-            let result = this.processDelete(xhr);
+            let result = this.processPut(xhr);
             if (onSuccess !== undefined)
                 onSuccess(result);
         } catch (e) {
@@ -49272,26 +49272,31 @@ export class DynamicModulesResource_removeModulesClient {
         }
     }
 
-    protected processDelete(xhr: any): void | null {
+    protected processPut(xhr: any): any | null {
         const status = xhr.status;
 
         let _headers: any = {};
-        if (status === 204) {
+        if (status === 200) {
             const _responseText = xhr.responseText;
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : null as any;
+    
+            return result200;
 
-        } else if (status === 401) {
+        } else if (status === 400) {
             const _responseText = xhr.responseText;
-            let result401: any = null;
-            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result401 = ErrorMessage.fromJS(resultData401);
-            return throwException("Returned if the call is not from a Connect app.", status, _responseText, _headers, result401);
+            return throwException("Returned if the request is invalid.", status, _responseText, _headers);
+
+        } else if (status === 403) {
+            const _responseText = xhr.responseText;
+            return throwException("Returned if:\n* the transfer ID is not found.\n* the authorisation credentials are incorrect or missing.", status, _responseText, _headers);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = xhr.responseText;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return;
+        return null;
     }
 }
 
@@ -49452,7 +49457,7 @@ export class DynamicModulesResource_registerModulesClient {
     }
 }
 
-export class AppIssueFieldValueUpdateResource_updateIssueFieldsClient {
+export class DynamicModulesResource_removeModulesClient {
     baseUrl: string;
     beforeSend: any = undefined;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -49462,43 +49467,43 @@ export class AppIssueFieldValueUpdateResource_updateIssueFieldsClient {
     }
 
     /**
-     * Bulk update custom field value
-     * @param atlassian_Transfer_Id The ID of the transfer.
+     * Remove modules
+     * @param moduleKey (optional) The key of the module to remove. To include multiple module keys, provide multiple copies of this parameter.
+    For example, `moduleKey=dynamic-attachment-entity-property&moduleKey=dynamic-select-field`.
+    Nonexistent keys are ignored.
      * @return Returned if the request is successful.
      */
-    put(atlassian_Transfer_Id: string, body: ConnectCustomFieldValues) {
-        return new Promise<any>((resolve, reject) => {
-            this.putWithCallbacks(atlassian_Transfer_Id, body, (result) => resolve(result), (exception, _reason) => reject(exception));
+    delete(moduleKey?: string[] | undefined) {
+        return new Promise<void>((resolve, reject) => {
+            this.deleteWithCallbacks(moduleKey, (result) => resolve(result), (exception, _reason) => reject(exception));
         });
     }
 
-    private putWithCallbacks(atlassian_Transfer_Id: string, body: ConnectCustomFieldValues, onSuccess?: (result: any) => void, onFail?: (exception: string, reason: string) => void) {
-        let url_ = this.baseUrl + "/rest/atlassian-connect/1/migration/field";
+    private deleteWithCallbacks(moduleKey: string[] | undefined, onSuccess?: (result: void) => void, onFail?: (exception: ErrorMessage | string, reason: string) => void) {
+        let url_ = this.baseUrl + "/rest/atlassian-connect/1/app/module/dynamic?";
+        if (moduleKey === null)
+            throw new globalThis.Error("The parameter 'moduleKey' cannot be null.");
+        else if (moduleKey !== undefined)
+            moduleKey && moduleKey.forEach(item => { url_ += "moduleKey=" + encodeURIComponent("" + item) + "&"; });
         url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
 
         jQuery.ajax({
             url: url_,
             beforeSend: this.beforeSend,
-            type: "put",
-            data: content_,
+            type: "delete",
             dataType: "text",
             headers: {
-                "Atlassian-Transfer-Id": atlassian_Transfer_Id !== undefined && atlassian_Transfer_Id !== null ? "" + atlassian_Transfer_Id : "",
-                "Content-Type": "application/json",
-                "Accept": "application/json"
             }
         }).done((_data, _textStatus, xhr) => {
-            this.processPutWithCallbacks(url_, xhr, onSuccess, onFail);
+            this.processDeleteWithCallbacks(url_, xhr, onSuccess, onFail);
         }).fail((xhr) => {
-            this.processPutWithCallbacks(url_, xhr, onSuccess, onFail);
+            this.processDeleteWithCallbacks(url_, xhr, onSuccess, onFail);
         });
     }
 
-    private processPutWithCallbacks(_url: string, xhr: any, onSuccess?: any, onFail?: any): void {
+    private processDeleteWithCallbacks(_url: string, xhr: any, onSuccess?: any, onFail?: any): void {
         try {
-            let result = this.processPut(xhr);
+            let result = this.processDelete(xhr);
             if (onSuccess !== undefined)
                 onSuccess(result);
         } catch (e) {
@@ -49507,31 +49512,26 @@ export class AppIssueFieldValueUpdateResource_updateIssueFieldsClient {
         }
     }
 
-    protected processPut(xhr: any): any | null {
+    protected processDelete(xhr: any): void | null {
         const status = xhr.status;
 
         let _headers: any = {};
-        if (status === 200) {
+        if (status === 204) {
             const _responseText = xhr.responseText;
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = resultData200 !== undefined ? resultData200 : null as any;
-    
-            return result200;
+            return;
 
-        } else if (status === 400) {
+        } else if (status === 401) {
             const _responseText = xhr.responseText;
-            return throwException("Returned if the request is invalid.", status, _responseText, _headers);
-
-        } else if (status === 403) {
-            const _responseText = xhr.responseText;
-            return throwException("Returned if:\n* the transfer ID is not found.\n* the authorisation credentials are incorrect or missing.", status, _responseText, _headers);
+            let result401: any = null;
+            let resultData401 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result401 = ErrorMessage.fromJS(resultData401);
+            return throwException("Returned if the call is not from a Connect app.", status, _responseText, _headers, result401);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = xhr.responseText;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return null;
+        return;
     }
 }
 
@@ -49546,17 +49546,17 @@ export class MigrationResource_updateEntityPropertiesValueClient {
 
     /**
      * Bulk update entity properties
-     * @param atlassian_Transfer_Id The app migration transfer ID.
+     * @param atlassianTransferId The app migration transfer ID.
      * @param entityType The type indicating the object that contains the entity properties.
      * @return Returned if the request is successful.
      */
-    put(atlassian_Transfer_Id: string, entityType: EntityType, body: EntityPropertyDetails[]) {
+    put(atlassianTransferId: string, entityType: EntityType, body: EntityPropertyDetails[]) {
         return new Promise<void>((resolve, reject) => {
-            this.putWithCallbacks(atlassian_Transfer_Id, entityType, body, (result) => resolve(result), (exception, _reason) => reject(exception));
+            this.putWithCallbacks(atlassianTransferId, entityType, body, (result) => resolve(result), (exception, _reason) => reject(exception));
         });
     }
 
-    private putWithCallbacks(atlassian_Transfer_Id: string, entityType: EntityType, body: EntityPropertyDetails[], onSuccess?: (result: void) => void, onFail?: (exception: string, reason: string) => void) {
+    private putWithCallbacks(atlassianTransferId: string, entityType: EntityType, body: EntityPropertyDetails[], onSuccess?: (result: void) => void, onFail?: (exception: string, reason: string) => void) {
         let url_ = this.baseUrl + "/rest/atlassian-connect/1/migration/properties/{entityType}";
         if (entityType === undefined || entityType === null)
             throw new globalThis.Error("The parameter 'entityType' must be defined.");
@@ -49572,7 +49572,7 @@ export class MigrationResource_updateEntityPropertiesValueClient {
             data: content_,
             dataType: "text",
             headers: {
-                "Atlassian-Transfer-Id": atlassian_Transfer_Id !== undefined && atlassian_Transfer_Id !== null ? "" + atlassian_Transfer_Id : "",
+                "Atlassian-Transfer-Id": atlassianTransferId !== undefined && atlassianTransferId !== null ? "" + atlassianTransferId : "",
                 "Content-Type": "application/json",
             }
         }).done((_data, _textStatus, xhr) => {
@@ -49628,16 +49628,16 @@ export class MigrationResource_workflowRuleSearchClient {
 
     /**
      * Get workflow transition rule configurations
-     * @param atlassian_Transfer_Id The app migration transfer ID.
+     * @param atlassianTransferId The app migration transfer ID.
      * @return Returned if the request is successful.
      */
-    post(atlassian_Transfer_Id: string, body: WorkflowRulesSearch) {
+    post(atlassianTransferId: string, body: WorkflowRulesSearch) {
         return new Promise<WorkflowRulesSearchDetails>((resolve, reject) => {
-            this.postWithCallbacks(atlassian_Transfer_Id, body, (result) => resolve(result), (exception, _reason) => reject(exception));
+            this.postWithCallbacks(atlassianTransferId, body, (result) => resolve(result), (exception, _reason) => reject(exception));
         });
     }
 
-    private postWithCallbacks(atlassian_Transfer_Id: string, body: WorkflowRulesSearch, onSuccess?: (result: WorkflowRulesSearchDetails) => void, onFail?: (exception: string, reason: string) => void) {
+    private postWithCallbacks(atlassianTransferId: string, body: WorkflowRulesSearch, onSuccess?: (result: WorkflowRulesSearchDetails) => void, onFail?: (exception: string, reason: string) => void) {
         let url_ = this.baseUrl + "/rest/atlassian-connect/1/migration/workflow/rule/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -49650,7 +49650,7 @@ export class MigrationResource_workflowRuleSearchClient {
             data: content_,
             dataType: "text",
             headers: {
-                "Atlassian-Transfer-Id": atlassian_Transfer_Id !== undefined && atlassian_Transfer_Id !== null ? "" + atlassian_Transfer_Id : "",
+                "Atlassian-Transfer-Id": atlassianTransferId !== undefined && atlassianTransferId !== null ? "" + atlassianTransferId : "",
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }

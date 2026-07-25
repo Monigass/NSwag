@@ -2,15 +2,13 @@
 // <copyright file="ClientGeneratorBase.cs" company="NSwag">
 //     Copyright (c) Rico Suter. All rights reserved.
 // </copyright>
-// <license>https://github.com/RicoSuter/NSwag/blob/master/LICENSE.md</license>
+// <license>https://github.com/Monigass/NSwag/blob/master/LICENSE.md</license>
 // <author>Rico Suter, mail@rsuter.com</author>
 //-----------------------------------------------------------------------
 
-using Newtonsoft.Json.Linq;
 using NJsonSchema;
 using NJsonSchema.CodeGeneration;
 using NSwag.CodeGeneration.Models;
-using System.Runtime;
 
 namespace NSwag.CodeGeneration
 {
@@ -89,7 +87,15 @@ namespace NSwag.CodeGeneration
                     ? dtoTypes
                     : [];
 
-            return GenerateFile(clientTypes, dtoTypes, outputType)
+            var code = GenerateFile(clientTypes, dtoTypes, outputType);
+            
+            code = System.Text.RegularExpressions.Regex.Replace(
+                code,
+                @"^([ \t]*)(public enum [A-Za-z0-9_]+)",
+                "$1[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]\n$2",
+                System.Text.RegularExpressions.RegexOptions.Multiline);
+
+            return code
                 .Replace("\r", string.Empty)
                 .Replace("\n\n\n\n", "\n\n")
                 .Replace("\n\n\n", "\n\n");
@@ -112,7 +118,9 @@ namespace NSwag.CodeGeneration
 
             if (BaseSettings.OperationNameGenerator.SupportsMultipleClients)
             {
-                var controllerOperationsGroups = operations.GroupBy(o => o.ControllerName);
+                var controllerOperationsGroups = operations
+                    .GroupBy(o => o.ControllerName)
+                    .OrderBy(g => g.Key, StringComparer.Ordinal);
                 foreach (var controllerOperations in controllerOperationsGroups)
                 {
                     var controllerName = controllerOperations.Key;
@@ -169,9 +177,9 @@ namespace NSwag.CodeGeneration
             }
 
             var result = new List<TOperationModel>();
-            foreach (var pair in document.Paths)
+            foreach (var pair in document.Paths.OrderBy(path => path.Key, StringComparer.Ordinal))
             {
-                foreach (var p in pair.Value.ActualPathItem)
+                foreach (var p in pair.Value.ActualPathItem.OrderBy(operation => operation.Key, StringComparer.Ordinal))
                 {
                     var operation = p.Value;
  

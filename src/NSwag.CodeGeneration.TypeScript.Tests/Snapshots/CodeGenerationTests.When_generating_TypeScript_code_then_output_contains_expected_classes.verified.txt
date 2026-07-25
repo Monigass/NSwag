@@ -11,7 +11,7 @@ export class MyClass {
         this.baseUrl = baseUrl ?? "";
     }
 
-    person(): Promise<Person> {
+    getsPerson(): Promise<Person> {
         let url_ = this.baseUrl + "/Person";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -23,11 +23,11 @@ export class MyClass {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processPerson(_response);
+            return this.processGetsPerson(_response);
         });
     }
 
-    protected processPerson(response: Response): Promise<Person> {
+    protected processGetsPerson(response: Response): Promise<Person> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {

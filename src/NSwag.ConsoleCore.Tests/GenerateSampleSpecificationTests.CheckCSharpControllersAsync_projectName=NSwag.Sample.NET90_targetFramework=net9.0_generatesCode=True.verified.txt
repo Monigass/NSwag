@@ -34,17 +34,17 @@ namespace MyNamespace
         System.Threading.Tasks.Task PostAsync(string value);
 
 
-        System.Threading.Tasks.Task<TestEnum> GetAsync(int id);
-
-
-
-        System.Threading.Tasks.Task PutAsync(int id, string value);
+        System.Threading.Tasks.Task<string> GetToStringAsync(int id);
 
 
         System.Threading.Tasks.Task DeleteAsync(int id);
 
 
-        System.Threading.Tasks.Task<string> GetToStringAsync(int id);
+        System.Threading.Tasks.Task<TestEnum> GetAsync(int id);
+
+
+
+        System.Threading.Tasks.Task PutAsync(int id, string value);
 
 
         System.Threading.Tasks.Task<string> GetFooBarAsync(int id);
@@ -75,6 +75,20 @@ namespace MyNamespace
             return _implementation.PostAsync(value);
         }
 
+        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/Values/ToString({id})")]
+        public System.Threading.Tasks.Task<string> GetToString(int id)
+        {
+
+            return _implementation.GetToStringAsync(id);
+        }
+
+        [Microsoft.AspNetCore.Mvc.HttpDelete, Microsoft.AspNetCore.Mvc.Route("api/Values/{id}")]
+        public System.Threading.Tasks.Task Delete(int id)
+        {
+
+            return _implementation.DeleteAsync(id);
+        }
+
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/Values/{id}")]
         public System.Threading.Tasks.Task<TestEnum> Get(int id)
         {
@@ -87,20 +101,6 @@ namespace MyNamespace
         {
 
             return _implementation.PutAsync(id, value);
-        }
-
-        [Microsoft.AspNetCore.Mvc.HttpDelete, Microsoft.AspNetCore.Mvc.Route("api/Values/{id}")]
-        public System.Threading.Tasks.Task Delete(int id)
-        {
-
-            return _implementation.DeleteAsync(id);
-        }
-
-        [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/Values/ToString({id})")]
-        public System.Threading.Tasks.Task<string> GetToString(int id)
-        {
-
-            return _implementation.GetToStringAsync(id);
         }
 
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("api/Values/{id}/foo")]
@@ -131,7 +131,8 @@ namespace MyNamespace
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "")]
-    public enum TestEnum
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum TestEnum
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Foo")]

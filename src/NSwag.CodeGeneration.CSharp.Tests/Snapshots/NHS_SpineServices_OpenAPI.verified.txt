@@ -57,7 +57,7 @@ namespace MyNamespace
         /// </remarks>
         /// <returns>Returns a list of Notifications</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response> NotificationsAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response> GetsORD200NotificationAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -141,10 +141,10 @@ namespace MyNamespace
         /// <param name="status">The current status of the organisation to search for, expects Active or Inactive, e.g. Active</param>
         /// <param name="limit">Limit the number of records that are returned, default=20, min=1, max=1000, e.g. 100</param>
         /// <param name="offset">Used in conjunction with the Limit filter, offset the returned values by the value given, e.g. 200</param>
-        /// <param name="_format">Sets the format of the response, if not set the response with be in json format.</param>
+        /// <param name="format">Sets the format of the response, if not set the response with be in json format.</param>
         /// <returns>Search for a list of Organisations</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response2> OrganisationsAsync(string name = null, string roles = null, string lastChangeDate = null, string relTypeId = null, string targetOrgId = null, string orgRecordClass = null, string nonPrimaryRoleId = null, string primaryRoleId = null, string postCode = null, Status? status = null, int? limit = null, int? offset = null, _format? _format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response2> FindsORD200OrganisationByParametersAsync(string name = null, string roles = null, string lastChangeDate = null, string relTypeId = null, string targetOrgId = null, string orgRecordClass = null, string nonPrimaryRoleId = null, string primaryRoleId = null, string postCode = null, Status? status = null, int? limit = null, int? offset = null, _format? format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -208,9 +208,9 @@ namespace MyNamespace
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("Offset")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(offset, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (_format != null)
+                    if (format != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
@@ -270,14 +270,14 @@ namespace MyNamespace
         /// <remarks>
         /// Returns a single Organisation
         /// </remarks>
-        /// <param name="ods_code">ID of the Organisation</param>
-        /// <param name="_format">Sets the format of the response, if not set the response with be in json format.</param>
+        /// <param name="odsCode">ID of the Organisation</param>
+        /// <param name="format">Sets the format of the response, if not set the response with be in json format.</param>
         /// <returns>Auto generated using Swagger Inspector</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response3> Organisations2Async(string ods_code, _format2? _format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response3> GetsORD200OrganisationAsync(string odsCode, _format2? format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (ods_code == null)
-                throw new System.ArgumentNullException("ods_code");
+            if (odsCode == null)
+                throw new System.ArgumentNullException("odsCode");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -292,11 +292,11 @@ namespace MyNamespace
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
                     // Operation Path: "ORD/2-0-0/organisations/{ods_code}"
                     urlBuilder_.Append("ORD/2-0-0/organisations/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(ods_code, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(odsCode, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append('?');
-                    if (_format != null)
+                    if (format != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
@@ -356,10 +356,10 @@ namespace MyNamespace
         /// <remarks>
         /// Returns a list of Record classes.
         /// </remarks>
-        /// <param name="_format">Sets the format of the response, if not set the response with be in json format.</param>
+        /// <param name="format">Sets the format of the response, if not set the response with be in json format.</param>
         /// <returns>Returns a list of Record classes.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response4> RecordclassesAsync(_format3? _format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response4> GetsORD200RecordclassAsync(_format3? format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -375,9 +375,9 @@ namespace MyNamespace
                     // Operation Path: "ORD/2-0-0/recordclasses"
                     urlBuilder_.Append("ORD/2-0-0/recordclasses");
                     urlBuilder_.Append('?');
-                    if (_format != null)
+                    if (format != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
@@ -437,14 +437,14 @@ namespace MyNamespace
         /// <remarks>
         /// Returns a single record class
         /// </remarks>
-        /// <param name="class_id">ID of the class</param>
-        /// <param name="_format">Sets the format of the response, if not set the response with be in json format.</param>
+        /// <param name="classId">ID of the class</param>
+        /// <param name="format">Sets the format of the response, if not set the response with be in json format.</param>
         /// <returns>Returns a single record class</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response5> Recordclasses2Async(string class_id, _format4? _format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response5> FindsORD200RecordclassAsync(string classId, _format4? format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (class_id == null)
-                throw new System.ArgumentNullException("class_id");
+            if (classId == null)
+                throw new System.ArgumentNullException("classId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -459,11 +459,11 @@ namespace MyNamespace
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
                     // Operation Path: "ORD/2-0-0/recordclasses/{class_id}"
                     urlBuilder_.Append("ORD/2-0-0/recordclasses/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(class_id, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(classId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append('?');
-                    if (_format != null)
+                    if (format != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
@@ -523,10 +523,10 @@ namespace MyNamespace
         /// <remarks>
         /// Returns a list of Relationships
         /// </remarks>
-        /// <param name="_format">Sets the format of the response, if not set the response with be in json format.</param>
+        /// <param name="format">Sets the format of the response, if not set the response with be in json format.</param>
         /// <returns>Returns a list of Relationships</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response6> RelsAsync(_format5? _format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response6> GetsORD200RelAsync(_format5? format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -542,9 +542,9 @@ namespace MyNamespace
                     // Operation Path: "ORD/2-0-0/rels"
                     urlBuilder_.Append("ORD/2-0-0/rels");
                     urlBuilder_.Append('?');
-                    if (_format != null)
+                    if (format != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
@@ -604,14 +604,14 @@ namespace MyNamespace
         /// <remarks>
         /// Returns a single Relationship
         /// </remarks>
-        /// <param name="rel_id">ID of the Relationship</param>
-        /// <param name="_format">Sets the format of the response, if not set the response with be in json format.</param>
+        /// <param name="relId">ID of the Relationship</param>
+        /// <param name="format">Sets the format of the response, if not set the response with be in json format.</param>
         /// <returns>Returns a single Relationship</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response7> Rels2Async(string rel_id, _format6? _format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response7> FindsORD200RelAsync(string relId, _format6? format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (rel_id == null)
-                throw new System.ArgumentNullException("rel_id");
+            if (relId == null)
+                throw new System.ArgumentNullException("relId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -626,11 +626,11 @@ namespace MyNamespace
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
                     // Operation Path: "ORD/2-0-0/rels/{rel_id}"
                     urlBuilder_.Append("ORD/2-0-0/rels/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(rel_id, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(relId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append('?');
-                    if (_format != null)
+                    if (format != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
@@ -690,10 +690,10 @@ namespace MyNamespace
         /// <remarks>
         /// Returns a list of Roles
         /// </remarks>
-        /// <param name="_format">Sets the format of the response, if not set the response with be in json format.</param>
+        /// <param name="format">Sets the format of the response, if not set the response with be in json format.</param>
         /// <returns>Returns a list of Roles</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response8> RolesAsync(_format7? _format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response8> GetsORD200RoleAsync(_format7? format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -709,9 +709,9 @@ namespace MyNamespace
                     // Operation Path: "ORD/2-0-0/roles"
                     urlBuilder_.Append("ORD/2-0-0/roles");
                     urlBuilder_.Append('?');
-                    if (_format != null)
+                    if (format != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
@@ -771,14 +771,14 @@ namespace MyNamespace
         /// <remarks>
         /// Returns a single Role
         /// </remarks>
-        /// <param name="role_id">ID of the Role</param>
-        /// <param name="_format">Sets the format of the response, if not set the response with be in json format.</param>
+        /// <param name="roleId">ID of the Role</param>
+        /// <param name="format">Sets the format of the response, if not set the response with be in json format.</param>
         /// <returns>Returns a single Role</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response9> Roles2Async(string role_id, _format8? _format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response9> FindsORD200RoleAsync(string roleId, _format8? format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (role_id == null)
-                throw new System.ArgumentNullException("role_id");
+            if (roleId == null)
+                throw new System.ArgumentNullException("roleId");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -793,11 +793,11 @@ namespace MyNamespace
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
                     // Operation Path: "ORD/2-0-0/roles/{role_id}"
                     urlBuilder_.Append("ORD/2-0-0/roles/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(role_id, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(roleId, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append('?');
-                    if (_format != null)
+                    if (format != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
@@ -858,10 +858,10 @@ namespace MyNamespace
         /// Returns a list of Organisation endpoints
         /// </remarks>
         /// <param name="lastChangeDate">Returns organisations that have been updated on or since this date in the format YYYY-MM-DD, e.g. 2021-12-01</param>
-        /// <param name="_format">The format to return the response in, expects xml or json, e.g. xml</param>
+        /// <param name="format">The format to return the response in, expects xml or json, e.g. xml</param>
         /// <returns>Returns a list of Organisation endpoints</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response10> SyncAsync(string lastChangeDate, _format9? _format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response10> GetsORD200SyncAsync(string lastChangeDate, _format9? format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (lastChangeDate == null)
                 throw new System.ArgumentNullException("lastChangeDate");
@@ -881,9 +881,9 @@ namespace MyNamespace
                     urlBuilder_.Append("ORD/2-0-0/sync");
                     urlBuilder_.Append('?');
                     urlBuilder_.Append(System.Uri.EscapeDataString("LastChangeDate")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(lastChangeDate, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
-                    if (_format != null)
+                    if (format != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
@@ -943,10 +943,10 @@ namespace MyNamespace
         /// <remarks>
         /// Returns a list of FHIR Roles
         /// </remarks>
-        /// <param name="_format">Sets the format of the response, if not set the response with be in json format.</param>
+        /// <param name="format">Sets the format of the response, if not set the response with be in json format.</param>
         /// <returns>Returns a list of FHIR Roles</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response11> ODSAPIOrganizationRole1Async(_format10? _format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response11> GetsSTU3CodeSystemAsync(_format10? format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -962,9 +962,9 @@ namespace MyNamespace
                     // Operation Path: "STU3/CodeSystem/ODSAPI-OrganizationRole-1"
                     urlBuilder_.Append("STU3/CodeSystem/ODSAPI-OrganizationRole-1");
                     urlBuilder_.Append('?');
-                    if (_format != null)
+                    if (format != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
@@ -1026,24 +1026,24 @@ namespace MyNamespace
         /// </remarks>
         /// <param name="name">The current name of the organisation to search for, e.g. integration</param>
         /// <param name="identifier">A Role or multiple roles separated by commas that organisations belong to, e.g. RRF12</param>
-        /// <param name="ods_org_role">A Role or multiple roles separated by commas that organisations belong to, e.g. 101,107</param>
-        /// <param name="ods_org_primaryRole">The ods-org-primaryRole of the organisation to search for. This filter cannot be used on it's own and can only be used with the ods-org-role, e.g. true</param>
-        /// <param name="address_postalcode">The postcode of the organisation to search for, searches for postcode starting with this value. e.g. 'TS23'</param>
-        /// <param name="address_postalcode_contains">The postcode of the organisation to search for, searches for postcode containing this value. e.g. '2LA'</param>
-        /// <param name="address_postalcode_exact">The postcode of the organisation to search for, searches for an exact match of this value. e.g. 'TS23 2LA'</param>
-        /// <param name="address_city">The city of the organisation to search for, searches for cities starting with this value. e.g. 'lee'</param>
-        /// <param name="address_city_contains">The city of the organisation to search for, searches for cities containing this value. e.g. 'eed'</param>
-        /// <param name="address_city_exact">The city of the organisation to search for, searches for an exact match of this value. e.g. 'leeds'</param>
+        /// <param name="odsOrgRole">A Role or multiple roles separated by commas that organisations belong to, e.g. 101,107</param>
+        /// <param name="odsOrgPrimaryRole">The ods-org-primaryRole of the organisation to search for. This filter cannot be used on it's own and can only be used with the ods-org-role, e.g. true</param>
+        /// <param name="addressPostalcode">The postcode of the organisation to search for, searches for postcode starting with this value. e.g. 'TS23'</param>
+        /// <param name="addressPostalcodeContains">The postcode of the organisation to search for, searches for postcode containing this value. e.g. '2LA'</param>
+        /// <param name="addressPostalcodeExact">The postcode of the organisation to search for, searches for an exact match of this value. e.g. 'TS23 2LA'</param>
+        /// <param name="addressCity">The city of the organisation to search for, searches for cities starting with this value. e.g. 'lee'</param>
+        /// <param name="addressCityContains">The city of the organisation to search for, searches for cities containing this value. e.g. 'eed'</param>
+        /// <param name="addressCityExact">The city of the organisation to search for, searches for an exact match of this value. e.g. 'leeds'</param>
         /// <param name="active">The current status of the organisation to search for, expects true or false, e.g. false</param>
-        /// <param name="_id">Returns organisations by id, e.g. RRF</param>
-        /// <param name="_lastUpdated">Returns organisations that have been since this date in the format gtYYYY-MM-DD, e.g. gt2021-12-01</param>
-        /// <param name="_summary">The total count, only one value "count"</param>
-        /// <param name="_count">Limit the number of records that are returned, min=0, max=20, e.g. 10</param>
-        /// <param name="_page">Offset the returned values by the value given, e.g. 2</param>
-        /// <param name="_format">Sets the format of the response, if not set the response with be in json format.</param>
+        /// <param name="id">Returns organisations by id, e.g. RRF</param>
+        /// <param name="lastUpdated">Returns organisations that have been since this date in the format gtYYYY-MM-DD, e.g. gt2021-12-01</param>
+        /// <param name="summary">The total count, only one value "count"</param>
+        /// <param name="count">Limit the number of records that are returned, min=0, max=20, e.g. 10</param>
+        /// <param name="page">Offset the returned values by the value given, e.g. 2</param>
+        /// <param name="format">Sets the format of the response, if not set the response with be in json format.</param>
         /// <returns>Returns a list of FHIR Organizations</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response12> OrganizationAsync(string name = null, string identifier = null, string ods_org_role = null, OdsOrgPrimaryRole? ods_org_primaryRole = null, string address_postalcode = null, string address_postalcode_contains = null, string address_postalcode_exact = null, string address_city = null, string address_city_contains = null, string address_city_exact = null, Active? active = null, string _id = null, string _lastUpdated = null, string _summary = null, int? _count = null, int? _page = null, _format11? _format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response12> FindsSTU3OrganizationByParametersAsync(string name = null, string identifier = null, string odsOrgRole = null, OdsOrgPrimaryRole? odsOrgPrimaryRole = null, string addressPostalcode = null, string addressPostalcodeContains = null, string addressPostalcodeExact = null, string addressCity = null, string addressCityContains = null, string addressCityExact = null, Active? active = null, string id = null, string lastUpdated = null, string summary = null, int? count = null, int? page = null, _format11? format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1067,65 +1067,65 @@ namespace MyNamespace
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("identifier")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(identifier, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (ods_org_role != null)
+                    if (odsOrgRole != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("ods-org-role")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(ods_org_role, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("ods-org-role")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(odsOrgRole, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (ods_org_primaryRole != null)
+                    if (odsOrgPrimaryRole != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("ods-org-primaryRole")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(ods_org_primaryRole, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("ods-org-primaryRole")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(odsOrgPrimaryRole, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (address_postalcode != null)
+                    if (addressPostalcode != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("address-postalcode")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(address_postalcode, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("address-postalcode")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(addressPostalcode, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (address_postalcode_contains != null)
+                    if (addressPostalcodeContains != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("address-postalcode:contains")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(address_postalcode_contains, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("address-postalcode:contains")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(addressPostalcodeContains, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (address_postalcode_exact != null)
+                    if (addressPostalcodeExact != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("address-postalcode:exact")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(address_postalcode_exact, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("address-postalcode:exact")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(addressPostalcodeExact, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (address_city != null)
+                    if (addressCity != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("address-city")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(address_city, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("address-city")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(addressCity, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (address_city_contains != null)
+                    if (addressCityContains != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("address-city:contains")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(address_city_contains, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("address-city:contains")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(addressCityContains, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (address_city_exact != null)
+                    if (addressCityExact != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("address-city:exact")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(address_city_exact, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("address-city:exact")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(addressCityExact, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (active != null)
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("active")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(active, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (_id != null)
+                    if (id != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_id")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_id, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_id")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (_lastUpdated != null)
+                    if (lastUpdated != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_lastUpdated")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_lastUpdated, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_lastUpdated")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(lastUpdated, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (_summary != null)
+                    if (summary != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_summary")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_summary, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_summary")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(summary, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (_count != null)
+                    if (count != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_count")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_count, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_count")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(count, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (_page != null)
+                    if (page != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_page")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_page, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_page")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(page, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
-                    if (_format != null)
+                    if (format != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
@@ -1185,14 +1185,14 @@ namespace MyNamespace
         /// <remarks>
         /// Returns FHIR Organization details
         /// </remarks>
-        /// <param name="ods_code">ID of the Organization</param>
-        /// <param name="_format">Sets the format of the response, if not set the response with be in json format.</param>
+        /// <param name="odsCode">ID of the Organization</param>
+        /// <param name="format">Sets the format of the response, if not set the response with be in json format.</param>
         /// <returns>Returns FHIR Organization details</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response13> Organization2Async(string ods_code, _format12? _format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response13> GetsSTU3OrganizationAsync(string odsCode, _format12? format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (ods_code == null)
-                throw new System.ArgumentNullException("ods_code");
+            if (odsCode == null)
+                throw new System.ArgumentNullException("odsCode");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1207,11 +1207,11 @@ namespace MyNamespace
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
                     // Operation Path: "STU3/Organization/{ods_code}"
                     urlBuilder_.Append("STU3/Organization/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(ods_code, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(odsCode, System.Globalization.CultureInfo.InvariantCulture)));
                     urlBuilder_.Append('?');
-                    if (_format != null)
+                    if (format != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
@@ -1271,10 +1271,10 @@ namespace MyNamespace
         /// <remarks>
         /// Returns Metadata
         /// </remarks>
-        /// <param name="_format">Sets the format of the response, if not set the response with be in json format.</param>
+        /// <param name="format">Sets the format of the response, if not set the response with be in json format.</param>
         /// <returns>Returns Metadata</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Response14> MetadataAsync(_format13? _format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<Response14> GetsSTU3MetadataAsync(_format13? format = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -1290,9 +1290,9 @@ namespace MyNamespace
                     // Operation Path: "STU3/metadata"
                     urlBuilder_.Append("STU3/metadata");
                     urlBuilder_.Append('?');
-                    if (_format != null)
+                    if (format != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(_format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("_format")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(format, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     urlBuilder_.Length--;
 
@@ -1480,7 +1480,8 @@ namespace MyNamespace
         }
     }
 
-    public enum Status
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Status
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Active")]
@@ -1491,7 +1492,8 @@ namespace MyNamespace
 
     }
 
-    public enum _format
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum _format
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"json")]
@@ -1502,7 +1504,8 @@ namespace MyNamespace
 
     }
 
-    public enum _format2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum _format2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"json")]
@@ -1513,7 +1516,8 @@ namespace MyNamespace
 
     }
 
-    public enum _format3
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum _format3
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"json")]
@@ -1524,7 +1528,8 @@ namespace MyNamespace
 
     }
 
-    public enum _format4
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum _format4
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"json")]
@@ -1535,7 +1540,8 @@ namespace MyNamespace
 
     }
 
-    public enum _format5
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum _format5
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"json")]
@@ -1546,7 +1552,8 @@ namespace MyNamespace
 
     }
 
-    public enum _format6
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum _format6
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"json")]
@@ -1557,7 +1564,8 @@ namespace MyNamespace
 
     }
 
-    public enum _format7
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum _format7
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"json")]
@@ -1568,7 +1576,8 @@ namespace MyNamespace
 
     }
 
-    public enum _format8
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum _format8
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"json")]
@@ -1579,7 +1588,8 @@ namespace MyNamespace
 
     }
 
-    public enum _format9
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum _format9
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"xml")]
@@ -1590,7 +1600,8 @@ namespace MyNamespace
 
     }
 
-    public enum _format10
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum _format10
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"json")]
@@ -1601,7 +1612,8 @@ namespace MyNamespace
 
     }
 
-    public enum OdsOrgPrimaryRole
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OdsOrgPrimaryRole
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"True")]
@@ -1612,7 +1624,8 @@ namespace MyNamespace
 
     }
 
-    public enum Active
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Active
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"True")]
@@ -1623,7 +1636,8 @@ namespace MyNamespace
 
     }
 
-    public enum _format11
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum _format11
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"json")]
@@ -1634,7 +1648,8 @@ namespace MyNamespace
 
     }
 
-    public enum _format12
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum _format12
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"json")]
@@ -1645,7 +1660,8 @@ namespace MyNamespace
 
     }
 
-    public enum _format13
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum _format13
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"json")]

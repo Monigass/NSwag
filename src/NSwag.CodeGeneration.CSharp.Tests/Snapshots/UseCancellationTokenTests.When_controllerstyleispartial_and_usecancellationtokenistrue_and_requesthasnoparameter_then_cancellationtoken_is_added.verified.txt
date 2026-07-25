@@ -7,12 +7,11 @@ namespace MyNamespace
     public interface ITestController
     {
 
+        System.Threading.Tasks.Task BarAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+
 
 
         System.Threading.Tasks.Task<string> FooAsync(string test, bool test2, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
-
-
-        System.Threading.Tasks.Task BarAsync(System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
     }
 
@@ -25,18 +24,18 @@ namespace MyNamespace
             _implementation = implementation;
         }
 
-        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("Foo")]
-        public System.Threading.Tasks.Task<string> Foo([Microsoft.AspNetCore.Mvc.FromQuery] string test, [Microsoft.AspNetCore.Mvc.FromQuery] bool test2, System.Threading.CancellationToken cancellationToken)
-        {
-
-            return _implementation.FooAsync(test, test2, cancellationToken);
-        }
-
         [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("Bar")]
         public System.Threading.Tasks.Task Bar(System.Threading.CancellationToken cancellationToken)
         {
 
             return _implementation.BarAsync(cancellationToken);
+        }
+
+        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("Foo")]
+        public System.Threading.Tasks.Task<string> Foo([Microsoft.AspNetCore.Mvc.FromQuery] string test, [Microsoft.AspNetCore.Mvc.FromQuery] bool test2, System.Threading.CancellationToken cancellationToken)
+        {
+
+            return _implementation.FooAsync(test, test2, cancellationToken);
         }
 
     }

@@ -7,10 +7,10 @@ namespace MyNamespace
     public interface ITestController
     {
 
-        System.Threading.Tasks.Task<SwaggerResponse<string>> FooAsync();
-
-
         System.Threading.Tasks.Task<SwaggerResponse> BarAsync();
+
+
+        System.Threading.Tasks.Task<SwaggerResponse<string>> FooAsync();
 
     }
 
@@ -23,21 +23,6 @@ namespace MyNamespace
             _implementation = implementation;
         }
 
-        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("Foo")]
-        public async System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> Foo()
-        {
-
-            var result = await _implementation.FooAsync().ConfigureAwait(false);
-
-            var status = result.StatusCode;
-            Microsoft.AspNetCore.Mvc.ObjectResult response = new Microsoft.AspNetCore.Mvc.ObjectResult(result.Result) { StatusCode = status };
-
-            foreach (var header in result.Headers)
-                Request.HttpContext.Response.Headers.Add(header.Key, new Microsoft.Extensions.Primitives.StringValues(header.Value.ToArray()));
-
-            return response;
-        }
-
         [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("Bar")]
         public async System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> Bar()
         {
@@ -46,6 +31,21 @@ namespace MyNamespace
 
             var status = result.StatusCode;
             Microsoft.AspNetCore.Mvc.ObjectResult response = new Microsoft.AspNetCore.Mvc.ObjectResult(result) { StatusCode = status };
+
+            foreach (var header in result.Headers)
+                Request.HttpContext.Response.Headers.Add(header.Key, new Microsoft.Extensions.Primitives.StringValues(header.Value.ToArray()));
+
+            return response;
+        }
+
+        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("Foo")]
+        public async System.Threading.Tasks.Task<Microsoft.AspNetCore.Mvc.IActionResult> Foo()
+        {
+
+            var result = await _implementation.FooAsync().ConfigureAwait(false);
+
+            var status = result.StatusCode;
+            Microsoft.AspNetCore.Mvc.ObjectResult response = new Microsoft.AspNetCore.Mvc.ObjectResult(result.Result) { StatusCode = status };
 
             foreach (var header in result.Headers)
                 Request.HttpContext.Response.Headers.Add(header.Key, new Microsoft.Extensions.Primitives.StringValues(header.Value.ToArray()));

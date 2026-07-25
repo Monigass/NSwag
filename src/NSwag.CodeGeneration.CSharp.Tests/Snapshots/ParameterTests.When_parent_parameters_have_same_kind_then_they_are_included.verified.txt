@@ -51,12 +51,12 @@ namespace MyNamespace
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
-        public virtual System.Threading.Tasks.Task RemoveElementAsync(string x_User, System.Collections.Generic.IEnumerable<long> elementId, string secureToken)
+        public virtual System.Threading.Tasks.Task RemoveElementAsync(string xUser, System.Collections.Generic.IEnumerable<long> elementId, string secureToken)
         {
-            return RemoveElementAsync(x_User, elementId, secureToken, System.Threading.CancellationToken.None);
+            return RemoveElementAsync(xUser, elementId, secureToken, System.Threading.CancellationToken.None);
         }
 
-        public virtual async System.Threading.Tasks.Task RemoveElementAsync(string x_User, System.Collections.Generic.IEnumerable<long> elementId, string secureToken, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task RemoveElementAsync(string xUser, System.Collections.Generic.IEnumerable<long> elementId, string secureToken, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -65,9 +65,9 @@ namespace MyNamespace
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
 
-                    if (x_User == null)
-                        throw new System.ArgumentNullException("x_User");
-                    request_.Headers.TryAddWithoutValidation("X-User", ConvertToString(x_User, System.Globalization.CultureInfo.InvariantCulture));
+                    if (xUser == null)
+                        throw new System.ArgumentNullException("xUser");
+                    request_.Headers.TryAddWithoutValidation("X-User", ConvertToString(xUser, System.Globalization.CultureInfo.InvariantCulture));
 
                     if (secureToken == null)
                         throw new System.ArgumentNullException("secureToken");
