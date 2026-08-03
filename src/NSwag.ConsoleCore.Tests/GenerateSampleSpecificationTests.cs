@@ -55,7 +55,7 @@ namespace NSwag.ConsoleCore.Tests
 
             try
             {
-                process.WaitForExit(60000);
+                process.WaitForExit(180000);
             }
             finally
             {

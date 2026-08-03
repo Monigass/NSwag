@@ -2,7 +2,7 @@
 // <copyright file="ProjectMetadata.cs" company="NSwag">
 //     Copyright (c) Rico Suter. All rights reserved.
 // </copyright>
-// <license>https://github.com/RicoSuter/NSwag/blob/master/LICENSE.md</license>
+// <license>https://github.com/Monigass/NSwag/blob/master/LICENSE.md</license>
 // <author>Rico Suter, mail@rsuter.com</author>
 //-----------------------------------------------------------------------
 
@@ -245,7 +245,7 @@ namespace NSwag.Commands.Generation.AspNetCore
                     RedirectStandardError = true
                 });
 
-                process.WaitForExit(10000);
+                process.WaitForExit(60000);
 
                 if (process.ExitCode == 0)
                 {

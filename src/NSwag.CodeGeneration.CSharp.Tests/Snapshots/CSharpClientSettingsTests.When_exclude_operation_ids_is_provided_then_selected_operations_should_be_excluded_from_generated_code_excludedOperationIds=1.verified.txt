@@ -6,13 +6,13 @@ namespace MyNamespace
 
     public partial interface IFooClient
     {
-        System.Threading.Tasks.Task<object> CreatePersonAsync(bool? @override);
-
-        System.Threading.Tasks.Task<object> CreatePersonAsync(bool? @override, System.Threading.CancellationToken cancellationToken);
-
         System.Threading.Tasks.Task<object> DeletePersonAsync(bool? @override);
 
         System.Threading.Tasks.Task<object> DeletePersonAsync(bool? @override, System.Threading.CancellationToken cancellationToken);
+
+        System.Threading.Tasks.Task<object> CreatePersonAsync(bool? @override);
+
+        System.Threading.Tasks.Task<object> CreatePersonAsync(bool? @override, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -63,12 +63,12 @@ namespace MyNamespace
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
-        public virtual System.Threading.Tasks.Task<object> CreatePersonAsync(bool? @override)
+        public virtual System.Threading.Tasks.Task<object> DeletePersonAsync(bool? @override)
         {
-            return CreatePersonAsync(@override, System.Threading.CancellationToken.None);
+            return DeletePersonAsync(@override, System.Threading.CancellationToken.None);
         }
 
-        public virtual async System.Threading.Tasks.Task<object> CreatePersonAsync(bool? @override, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<object> DeletePersonAsync(bool? @override, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -76,8 +76,7 @@ namespace MyNamespace
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
@@ -139,12 +138,12 @@ namespace MyNamespace
             }
         }
 
-        public virtual System.Threading.Tasks.Task<object> DeletePersonAsync(bool? @override)
+        public virtual System.Threading.Tasks.Task<object> CreatePersonAsync(bool? @override)
         {
-            return DeletePersonAsync(@override, System.Threading.CancellationToken.None);
+            return CreatePersonAsync(@override, System.Threading.CancellationToken.None);
         }
 
-        public virtual async System.Threading.Tasks.Task<object> DeletePersonAsync(bool? @override, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<object> CreatePersonAsync(bool? @override, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -152,7 +151,8 @@ namespace MyNamespace
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
+                    request_.Content = new System.Net.Http.StringContent(string.Empty, System.Text.Encoding.UTF8, "application/json");
+                    request_.Method = new System.Net.Http.HttpMethod("POST");
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();

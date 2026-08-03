@@ -310,7 +310,8 @@ namespace MyNamespace
 
     }
 
-    public enum Model
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Model
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"model-1")]

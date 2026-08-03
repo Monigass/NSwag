@@ -69957,7 +69957,7 @@ namespace MyNamespace
         }
     }
 
-    public partial class AddonPropertiesResource_getAddonPropertiesClient 
+    public partial class AddonPropertiesResource_deleteAddonPropertyClient 
     {
         #pragma warning disable 8618
         private string _baseUrl;
@@ -69968,7 +69968,7 @@ namespace MyNamespace
         private Newtonsoft.Json.JsonSerializerSettings _instanceSettings;
 
     #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public AddonPropertiesResource_getAddonPropertiesClient(System.Net.Http.HttpClient httpClient)
+        public AddonPropertiesResource_deleteAddonPropertyClient(System.Net.Http.HttpClient httpClient)
     #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             BaseUrl = "https://your-domain.atlassian.net";
@@ -70006,21 +70006,25 @@ namespace MyNamespace
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Get app properties
+        /// Delete app property
         /// </summary>
         /// <remarks>
-        /// Gets all the properties of an app.
+        /// Deletes an app's property.
         /// <br/>
         /// <br/>**[Permissions](#permissions) required:** Only a Connect app whose key matches `addonKey` can make this request.
         /// <br/>Additionally, Forge apps can access Connect app properties (stored against the same `app.connect.key`).
         /// </remarks>
         /// <param name="addonKey">The key of the app, as defined in its descriptor.</param>
+        /// <param name="propertyKey">The key of the property.</param>
         /// <returns>Returned if the request is successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<PropertyKeys> GetAsync(string addonKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task DeleteAsync(string addonKey, string propertyKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (addonKey == null)
                 throw new System.ArgumentNullException("addonKey");
+
+            if (propertyKey == null)
+                throw new System.ArgumentNullException("propertyKey");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -70028,15 +70032,15 @@ namespace MyNamespace
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new System.Net.Http.HttpMethod("GET");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "rest/atlassian-connect/1/addons/{addonKey}/properties"
+                    // Operation Path: "rest/atlassian-connect/1/addons/{addonKey}/properties/{propertyKey}"
                     urlBuilder_.Append("rest/atlassian-connect/1/addons/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(addonKey, System.Globalization.CultureInfo.InvariantCulture)));
-                    urlBuilder_.Append("/properties");
+                    urlBuilder_.Append("/properties/");
+                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(propertyKey, System.Globalization.CultureInfo.InvariantCulture)));
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -70061,14 +70065,19 @@ namespace MyNamespace
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 204)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<PropertyKeys>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationMessage>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            return objectResponse_.Object;
+                            throw new ApiException<OperationMessage>("Returned if the property key is longer than 127 characters.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         if (status_ == 401)
@@ -70079,6 +70088,16 @@ namespace MyNamespace
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new ApiException<OperationMessage>("Returned if the authentication credentials are incorrect or missing.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                        }
+                        else
+                        if (status_ == 404)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<OperationMessage>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            throw new ApiException<OperationMessage>("Returned if the property is not found or doesn\'t belong to the app.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -70232,7 +70251,7 @@ namespace MyNamespace
         }
     }
 
-    public partial class AddonPropertiesResource_deleteAddonPropertyClient 
+    public partial class AddonPropertiesResource_getAddonPropertiesClient 
     {
         #pragma warning disable 8618
         private string _baseUrl;
@@ -70243,7 +70262,7 @@ namespace MyNamespace
         private Newtonsoft.Json.JsonSerializerSettings _instanceSettings;
 
     #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public AddonPropertiesResource_deleteAddonPropertyClient(System.Net.Http.HttpClient httpClient)
+        public AddonPropertiesResource_getAddonPropertiesClient(System.Net.Http.HttpClient httpClient)
     #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             BaseUrl = "https://your-domain.atlassian.net";
@@ -70281,25 +70300,21 @@ namespace MyNamespace
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Delete app property
+        /// Get app properties
         /// </summary>
         /// <remarks>
-        /// Deletes an app's property.
+        /// Gets all the properties of an app.
         /// <br/>
         /// <br/>**[Permissions](#permissions) required:** Only a Connect app whose key matches `addonKey` can make this request.
         /// <br/>Additionally, Forge apps can access Connect app properties (stored against the same `app.connect.key`).
         /// </remarks>
         /// <param name="addonKey">The key of the app, as defined in its descriptor.</param>
-        /// <param name="propertyKey">The key of the property.</param>
         /// <returns>Returned if the request is successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task DeleteAsync(string addonKey, string propertyKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<PropertyKeys> GetAsync(string addonKey, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (addonKey == null)
                 throw new System.ArgumentNullException("addonKey");
-
-            if (propertyKey == null)
-                throw new System.ArgumentNullException("propertyKey");
 
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -70307,15 +70322,15 @@ namespace MyNamespace
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
+                    request_.Method = new System.Net.Http.HttpMethod("GET");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "rest/atlassian-connect/1/addons/{addonKey}/properties/{propertyKey}"
+                    // Operation Path: "rest/atlassian-connect/1/addons/{addonKey}/properties"
                     urlBuilder_.Append("rest/atlassian-connect/1/addons/");
                     urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(addonKey, System.Globalization.CultureInfo.InvariantCulture)));
-                    urlBuilder_.Append("/properties/");
-                    urlBuilder_.Append(System.Uri.EscapeDataString(ConvertToString(propertyKey, System.Globalization.CultureInfo.InvariantCulture)));
+                    urlBuilder_.Append("/properties");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -70340,19 +70355,14 @@ namespace MyNamespace
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 204)
+                        if (status_ == 200)
                         {
-                            return;
-                        }
-                        else
-                        if (status_ == 400)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationMessage>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<PropertyKeys>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<OperationMessage>("Returned if the property key is longer than 127 characters.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            return objectResponse_.Object;
                         }
                         else
                         if (status_ == 401)
@@ -70363,16 +70373,6 @@ namespace MyNamespace
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             throw new ApiException<OperationMessage>("Returned if the authentication credentials are incorrect or missing.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
-                        }
-                        else
-                        if (status_ == 404)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<OperationMessage>(response_, headers_, cancellationToken).ConfigureAwait(false);
-                            if (objectResponse_.Object == null)
-                            {
-                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
-                            }
-                            throw new ApiException<OperationMessage>("Returned if the property is not found or doesn\'t belong to the app.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -71135,7 +71135,7 @@ namespace MyNamespace
         }
     }
 
-    public partial class DynamicModulesResource_removeModulesClient 
+    public partial class AppIssueFieldValueUpdateResource_updateIssueFieldsClient 
     {
         #pragma warning disable 8618
         private string _baseUrl;
@@ -71146,7 +71146,7 @@ namespace MyNamespace
         private Newtonsoft.Json.JsonSerializerSettings _instanceSettings;
 
     #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public DynamicModulesResource_removeModulesClient(System.Net.Http.HttpClient httpClient)
+        public AppIssueFieldValueUpdateResource_updateIssueFieldsClient(System.Net.Http.HttpClient httpClient)
     #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             BaseUrl = "https://your-domain.atlassian.net";
@@ -71184,38 +71184,43 @@ namespace MyNamespace
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Remove modules
+        /// Bulk update custom field value
         /// </summary>
         /// <remarks>
-        /// Remove all or a list of modules registered by the calling app.
+        /// Updates the value of a custom field added by Connect apps on one or more issues.
+        /// <br/>The values of up to 200 custom fields can be updated.
         /// <br/>
-        /// <br/>**[Permissions](#permissions) required:** Only Connect apps can make this request.
+        /// <br/>**[Permissions](#permissions) required:** Only Connect apps can make this request
         /// </remarks>
-        /// <param name="moduleKey">The key of the module to remove. To include multiple module keys, provide multiple copies of this parameter.
-        /// <br/>For example, `moduleKey=dynamic-attachment-entity-property&amp;moduleKey=dynamic-select-field`.
-        /// <br/>Nonexistent keys are ignored.</param>
+        /// <param name="atlassianTransferId">The ID of the transfer.</param>
         /// <returns>Returned if the request is successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task DeleteAsync(System.Collections.Generic.IEnumerable<string> moduleKey = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<object> PutAsync(System.Guid atlassianTransferId, ConnectCustomFieldValues body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
+            if (body == null)
+                throw new System.ArgumentNullException("body");
+
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
+
+                    if (atlassianTransferId == null)
+                        throw new System.ArgumentNullException("atlassianTransferId");
+                    request_.Headers.TryAddWithoutValidation("Atlassian-Transfer-Id", ConvertToString(atlassianTransferId, System.Globalization.CultureInfo.InvariantCulture));
+                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, JsonSerializerSettings);
+                    var content_ = new System.Net.Http.StringContent(json_);
+                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
+                    request_.Content = content_;
+                    request_.Method = new System.Net.Http.HttpMethod("PUT");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "rest/atlassian-connect/1/app/module/dynamic"
-                    urlBuilder_.Append("rest/atlassian-connect/1/app/module/dynamic");
-                    urlBuilder_.Append('?');
-                    if (moduleKey != null)
-                    {
-                            foreach (var item_ in moduleKey) { urlBuilder_.Append(System.Uri.EscapeDataString("moduleKey")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append('&'); }
-                    }
-                    urlBuilder_.Length--;
+                    // Operation Path: "rest/atlassian-connect/1/migration/field"
+                    urlBuilder_.Append("rest/atlassian-connect/1/migration/field");
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -71240,19 +71245,26 @@ namespace MyNamespace
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 204)
+                        if (status_ == 200)
                         {
-                            return;
-                        }
-                        else
-                        if (status_ == 401)
-                        {
-                            var objectResponse_ = await ReadObjectResponseAsync<ErrorMessage>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            throw new ApiException<ErrorMessage>("Returned if the call is not from a Connect app.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
+                            return objectResponse_.Object;
+                        }
+                        else
+                        if (status_ == 400)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("Returned if the request is invalid.", status_, responseText_, headers_, null);
+                        }
+                        else
+                        if (status_ == 403)
+                        {
+                            string responseText_ = ( response_.Content == null ) ? string.Empty : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
+                            throw new ApiException("Returned if:\n* the transfer ID is not found.\n* the authorisation credentials are incorrect or missing.", status_, responseText_, headers_, null);
                         }
                         else
                         {
@@ -71953,7 +71965,7 @@ namespace MyNamespace
         }
     }
 
-    public partial class AppIssueFieldValueUpdateResource_updateIssueFieldsClient 
+    public partial class DynamicModulesResource_removeModulesClient 
     {
         #pragma warning disable 8618
         private string _baseUrl;
@@ -71964,7 +71976,7 @@ namespace MyNamespace
         private Newtonsoft.Json.JsonSerializerSettings _instanceSettings;
 
     #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public AppIssueFieldValueUpdateResource_updateIssueFieldsClient(System.Net.Http.HttpClient httpClient)
+        public DynamicModulesResource_removeModulesClient(System.Net.Http.HttpClient httpClient)
     #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             BaseUrl = "https://your-domain.atlassian.net";
@@ -72002,43 +72014,38 @@ namespace MyNamespace
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Bulk update custom field value
+        /// Remove modules
         /// </summary>
         /// <remarks>
-        /// Updates the value of a custom field added by Connect apps on one or more issues.
-        /// <br/>The values of up to 200 custom fields can be updated.
+        /// Remove all or a list of modules registered by the calling app.
         /// <br/>
-        /// <br/>**[Permissions](#permissions) required:** Only Connect apps can make this request
+        /// <br/>**[Permissions](#permissions) required:** Only Connect apps can make this request.
         /// </remarks>
-        /// <param name="atlassian_Transfer_Id">The ID of the transfer.</param>
+        /// <param name="moduleKey">The key of the module to remove. To include multiple module keys, provide multiple copies of this parameter.
+        /// <br/>For example, `moduleKey=dynamic-attachment-entity-property&amp;moduleKey=dynamic-select-field`.
+        /// <br/>Nonexistent keys are ignored.</param>
         /// <returns>Returned if the request is successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<object> PutAsync(System.Guid atlassian_Transfer_Id, ConnectCustomFieldValues body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task DeleteAsync(System.Collections.Generic.IEnumerable<string> moduleKey = null, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            if (body == null)
-                throw new System.ArgumentNullException("body");
-
             var client_ = _httpClient;
             var disposeClient_ = false;
             try
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-
-                    if (atlassian_Transfer_Id == null)
-                        throw new System.ArgumentNullException("atlassian_Transfer_Id");
-                    request_.Headers.TryAddWithoutValidation("Atlassian-Transfer-Id", ConvertToString(atlassian_Transfer_Id, System.Globalization.CultureInfo.InvariantCulture));
-                    var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, JsonSerializerSettings);
-                    var content_ = new System.Net.Http.StringContent(json_);
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("PUT");
-                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
 
                     var urlBuilder_ = new System.Text.StringBuilder();
                     if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
-                    // Operation Path: "rest/atlassian-connect/1/migration/field"
-                    urlBuilder_.Append("rest/atlassian-connect/1/migration/field");
+                    // Operation Path: "rest/atlassian-connect/1/app/module/dynamic"
+                    urlBuilder_.Append("rest/atlassian-connect/1/app/module/dynamic");
+                    urlBuilder_.Append('?');
+                    if (moduleKey != null)
+                    {
+                            foreach (var item_ in moduleKey) { urlBuilder_.Append(System.Uri.EscapeDataString("moduleKey")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append('&'); }
+                    }
+                    urlBuilder_.Length--;
 
                     PrepareRequest(client_, request_, urlBuilder_);
 
@@ -72063,26 +72070,19 @@ namespace MyNamespace
                         ProcessResponse(client_, response_);
 
                         var status_ = (int)response_.StatusCode;
-                        if (status_ == 200)
+                        if (status_ == 204)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<object>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            return;
+                        }
+                        else
+                        if (status_ == 401)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<ErrorMessage>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
                                 throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
-                            return objectResponse_.Object;
-                        }
-                        else
-                        if (status_ == 400)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
-                            throw new ApiException("Returned if the request is invalid.", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 403)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await ReadAsStringAsync(response_.Content, cancellationToken).ConfigureAwait(false);
-                            throw new ApiException("Returned if:\n* the transfer ID is not found.\n* the authorisation credentials are incorrect or missing.", status_, responseText_, headers_, null);
+                            throw new ApiException<ErrorMessage>("Returned if the call is not from a Connect app.", status_, objectResponse_.Text, headers_, objectResponse_.Object, null);
                         }
                         else
                         {
@@ -72290,11 +72290,11 @@ namespace MyNamespace
         /// <remarks>
         /// Updates the values of multiple entity properties for an object, up to 50 updates per request. This operation is for use by Connect apps during app migration.
         /// </remarks>
-        /// <param name="atlassian_Transfer_Id">The app migration transfer ID.</param>
+        /// <param name="atlassianTransferId">The app migration transfer ID.</param>
         /// <param name="entityType">The type indicating the object that contains the entity properties.</param>
         /// <returns>Returned if the request is successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task PutAsync(System.Guid atlassian_Transfer_Id, EntityType entityType, System.Collections.Generic.IEnumerable<EntityPropertyDetails> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task PutAsync(System.Guid atlassianTransferId, EntityType entityType, System.Collections.Generic.IEnumerable<EntityPropertyDetails> body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (entityType == null)
                 throw new System.ArgumentNullException("entityType");
@@ -72309,9 +72309,9 @@ namespace MyNamespace
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
 
-                    if (atlassian_Transfer_Id == null)
-                        throw new System.ArgumentNullException("atlassian_Transfer_Id");
-                    request_.Headers.TryAddWithoutValidation("Atlassian-Transfer-Id", ConvertToString(atlassian_Transfer_Id, System.Globalization.CultureInfo.InvariantCulture));
+                    if (atlassianTransferId == null)
+                        throw new System.ArgumentNullException("atlassianTransferId");
+                    request_.Headers.TryAddWithoutValidation("Atlassian-Transfer-Id", ConvertToString(atlassianTransferId, System.Globalization.CultureInfo.InvariantCulture));
                     var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, JsonSerializerSettings);
                     var content_ = new System.Net.Http.StringContent(json_);
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
@@ -72569,10 +72569,10 @@ namespace MyNamespace
         /// <remarks>
         /// Returns configurations for workflow transition rules migrated from server to cloud and owned by the calling Connect app.
         /// </remarks>
-        /// <param name="atlassian_Transfer_Id">The app migration transfer ID.</param>
+        /// <param name="atlassianTransferId">The app migration transfer ID.</param>
         /// <returns>Returned if the request is successful.</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<WorkflowRulesSearchDetails> PostAsync(System.Guid atlassian_Transfer_Id, WorkflowRulesSearch body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public virtual async System.Threading.Tasks.Task<WorkflowRulesSearchDetails> PostAsync(System.Guid atlassianTransferId, WorkflowRulesSearch body, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -72584,9 +72584,9 @@ namespace MyNamespace
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
 
-                    if (atlassian_Transfer_Id == null)
-                        throw new System.ArgumentNullException("atlassian_Transfer_Id");
-                    request_.Headers.TryAddWithoutValidation("Atlassian-Transfer-Id", ConvertToString(atlassian_Transfer_Id, System.Globalization.CultureInfo.InvariantCulture));
+                    if (atlassianTransferId == null)
+                        throw new System.ArgumentNullException("atlassianTransferId");
+                    request_.Headers.TryAddWithoutValidation("Atlassian-Transfer-Id", ConvertToString(atlassianTransferId, System.Globalization.CultureInfo.InvariantCulture));
                     var json_ = Newtonsoft.Json.JsonConvert.SerializeObject(body, JsonSerializerSettings);
                     var content_ = new System.Net.Http.StringContent(json_);
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
@@ -95709,7 +95709,8 @@ namespace MyNamespace
     /// <summary>
     /// The payload for custom swimlanes
     /// </summary>
-    public enum SwimlanePayload
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum SwimlanePayload
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"none, custom, parentChild, assignee, assigneeUnassignedFirst, epic, project, issueparent, issuechildren, request_type")]
@@ -100746,7 +100747,8 @@ namespace MyNamespace
 
     }
 
-    public enum Type
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Type
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"issuetype")]
@@ -100766,7 +100768,8 @@ namespace MyNamespace
     /// <summary>
     /// The status of the project classification.
     /// </summary>
-    public enum Anonymous
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Anonymous
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PUBLISHED")]
@@ -100780,7 +100783,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"rank")]
@@ -100794,7 +100798,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"description")]
@@ -100817,7 +100822,8 @@ namespace MyNamespace
 
     }
 
-    public enum Filter2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Filter2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"my")]
@@ -100828,7 +100834,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy3
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy3
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"description")]
@@ -100887,7 +100894,8 @@ namespace MyNamespace
 
     }
 
-    public enum Status2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Status2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"active")]
@@ -100901,7 +100909,8 @@ namespace MyNamespace
 
     }
 
-    public enum Check
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Check
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"syntax")]
@@ -100915,7 +100924,8 @@ namespace MyNamespace
 
     }
 
-    public enum Anonymous2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Anonymous2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"custom")]
@@ -100926,7 +100936,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy4
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy4
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"contextsCount")]
@@ -100976,7 +100987,8 @@ namespace MyNamespace
 
     }
 
-    public enum Expand
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Expand
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"name")]
@@ -101017,7 +101029,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy5
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy5
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"description")]
@@ -101085,7 +101098,8 @@ namespace MyNamespace
 
     }
 
-    public enum AvatarSize
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum AvatarSize
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"xsmall")]
@@ -101153,7 +101167,8 @@ namespace MyNamespace
 
     }
 
-    public enum DeleteSubtasks
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum DeleteSubtasks
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"true")]
@@ -101164,7 +101179,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy6
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy6
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"created")]
@@ -101178,7 +101194,8 @@ namespace MyNamespace
 
     }
 
-    public enum AdjustEstimate
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum AdjustEstimate
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"leave")]
@@ -101189,7 +101206,8 @@ namespace MyNamespace
 
     }
 
-    public enum AdjustEstimate2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum AdjustEstimate2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"new")]
@@ -101206,7 +101224,8 @@ namespace MyNamespace
 
     }
 
-    public enum AdjustEstimate3
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum AdjustEstimate3
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"leave")]
@@ -101217,7 +101236,8 @@ namespace MyNamespace
 
     }
 
-    public enum AdjustEstimate4
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum AdjustEstimate4
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"new")]
@@ -101234,7 +101254,8 @@ namespace MyNamespace
 
     }
 
-    public enum AdjustEstimate5
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum AdjustEstimate5
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"new")]
@@ -101251,7 +101272,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy7
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy7
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"name")]
@@ -101274,7 +101296,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy8
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy8
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"name")]
@@ -101297,7 +101320,8 @@ namespace MyNamespace
 
     }
 
-    public enum Validation
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Validation
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"strict")]
@@ -101311,7 +101335,8 @@ namespace MyNamespace
 
     }
 
-    public enum ApplicationKey
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ApplicationKey
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"jira-core")]
@@ -101328,7 +101353,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy9
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy9
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"name")]
@@ -101342,7 +101368,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy10
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy10
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"category")]
@@ -101419,7 +101446,8 @@ namespace MyNamespace
 
     }
 
-    public enum Action
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Action
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"view")]
@@ -101436,7 +101464,8 @@ namespace MyNamespace
 
     }
 
-    public enum Anonymous3
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Anonymous3
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"live")]
@@ -101450,7 +101479,8 @@ namespace MyNamespace
 
     }
 
-    public enum ProjectTypeKey
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ProjectTypeKey
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"software")]
@@ -101467,7 +101497,8 @@ namespace MyNamespace
 
     }
 
-    public enum ProjectTypeKey2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ProjectTypeKey2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"software")]
@@ -101484,7 +101515,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy11
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy11
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"description")]
@@ -101525,7 +101557,8 @@ namespace MyNamespace
 
     }
 
-    public enum ComponentSource
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ComponentSource
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"jira")]
@@ -101539,7 +101572,8 @@ namespace MyNamespace
 
     }
 
-    public enum ComponentSource2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ComponentSource2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"jira")]
@@ -101553,7 +101587,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy12
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy12
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"description")]
@@ -101603,7 +101638,8 @@ namespace MyNamespace
 
     }
 
-    public enum Anonymous4
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Anonymous4
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"GLOBAL")]
@@ -101617,7 +101653,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy13
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy13
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"name")]
@@ -101640,7 +101677,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy14
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy14
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"name")]
@@ -101663,7 +101701,8 @@ namespace MyNamespace
 
     }
 
-    public enum ValidateQuery
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ValidateQuery
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"strict")]
@@ -101683,7 +101722,8 @@ namespace MyNamespace
 
     }
 
-    public enum Type2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Type2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"project")]
@@ -101697,7 +101737,8 @@ namespace MyNamespace
 
     }
 
-    public enum Type3
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Type3
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"project")]
@@ -101711,7 +101752,8 @@ namespace MyNamespace
 
     }
 
-    public enum Type4
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Type4
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"project")]
@@ -101725,7 +101767,8 @@ namespace MyNamespace
 
     }
 
-    public enum Type5
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Type5
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"issuetype")]
@@ -101739,7 +101782,8 @@ namespace MyNamespace
 
     }
 
-    public enum Size
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Size
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"xsmall")]
@@ -101759,7 +101803,8 @@ namespace MyNamespace
 
     }
 
-    public enum Format
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Format
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"png")]
@@ -101770,7 +101815,8 @@ namespace MyNamespace
 
     }
 
-    public enum Type6
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Type6
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"issuetype")]
@@ -101784,7 +101830,8 @@ namespace MyNamespace
 
     }
 
-    public enum Size2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Size2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"xsmall")]
@@ -101804,7 +101851,8 @@ namespace MyNamespace
 
     }
 
-    public enum Format2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Format2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"png")]
@@ -101815,7 +101863,8 @@ namespace MyNamespace
 
     }
 
-    public enum Type7
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Type7
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"issuetype")]
@@ -101829,7 +101878,8 @@ namespace MyNamespace
 
     }
 
-    public enum Size3
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Size3
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"xsmall")]
@@ -101849,7 +101899,8 @@ namespace MyNamespace
 
     }
 
-    public enum Format3
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Format3
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"png")]
@@ -101860,7 +101911,8 @@ namespace MyNamespace
 
     }
 
-    public enum Anonymous5
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Anonymous5
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"postfunction")]
@@ -101874,7 +101926,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderBy15
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderBy15
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"name")]
@@ -101906,7 +101959,8 @@ namespace MyNamespace
 
     }
 
-    public enum WorkflowMode
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum WorkflowMode
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"live")]
@@ -101917,7 +101971,8 @@ namespace MyNamespace
 
     }
 
-    public enum WorkflowMode2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum WorkflowMode2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"live")]
@@ -101928,7 +101983,8 @@ namespace MyNamespace
 
     }
 
-    public enum WorkflowMode3
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum WorkflowMode3
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"live")]
@@ -101939,7 +101995,8 @@ namespace MyNamespace
 
     }
 
-    public enum WorkflowMode4
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum WorkflowMode4
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"live")]
@@ -101950,7 +102007,8 @@ namespace MyNamespace
 
     }
 
-    public enum EntityType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum EntityType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"IssueProperty")]
@@ -101982,7 +102040,8 @@ namespace MyNamespace
 
     }
 
-    public enum AddAtlassianTeamRequestPlanningStyle
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum AddAtlassianTeamRequestPlanningStyle
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Scrum")]
@@ -101993,7 +102052,8 @@ namespace MyNamespace
 
     }
 
-    public enum AnnouncementBannerConfigurationVisibility
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum AnnouncementBannerConfigurationVisibility
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PUBLIC")]
@@ -102004,7 +102064,8 @@ namespace MyNamespace
 
     }
 
-    public enum ApprovalConfigurationActive
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ApprovalConfigurationActive
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"true")]
@@ -102015,7 +102076,8 @@ namespace MyNamespace
 
     }
 
-    public enum ApprovalConfigurationConditionType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ApprovalConfigurationConditionType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"number")]
@@ -102032,7 +102094,8 @@ namespace MyNamespace
     /// <summary>
     /// A list of roles that should be excluded as possible approvers.
     /// </summary>
-    public enum Exclude
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Exclude
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"assignee")]
@@ -102043,7 +102106,8 @@ namespace MyNamespace
 
     }
 
-    public enum AvailableWorkflowConnectRuleRuleType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum AvailableWorkflowConnectRuleRuleType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Condition")]
@@ -102060,7 +102124,8 @@ namespace MyNamespace
 
     }
 
-    public enum AvailableWorkflowForgeRuleRuleType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum AvailableWorkflowForgeRuleRuleType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Condition")]
@@ -102077,7 +102142,8 @@ namespace MyNamespace
 
     }
 
-    public enum AvailableWorkflowSystemRuleRuleType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum AvailableWorkflowSystemRuleRuleType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Condition")]
@@ -102094,7 +102160,8 @@ namespace MyNamespace
 
     }
 
-    public enum BoardFeaturePayloadFeatureKey
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum BoardFeaturePayloadFeatureKey
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ESTIMATION")]
@@ -102105,7 +102172,8 @@ namespace MyNamespace
 
     }
 
-    public enum BoardPayloadCardColorStrategy
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum BoardPayloadCardColorStrategy
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ISSUE_TYPE")]
@@ -102128,7 +102196,8 @@ namespace MyNamespace
 
     }
 
-    public enum BulkEditShareableEntityRequestAction
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum BulkEditShareableEntityRequestAction
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"changeOwner")]
@@ -102145,7 +102214,8 @@ namespace MyNamespace
 
     }
 
-    public enum BulkEditShareableEntityResponseAction
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum BulkEditShareableEntityResponseAction
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"changeOwner")]
@@ -102162,7 +102232,8 @@ namespace MyNamespace
 
     }
 
-    public enum BulkOperationProgressStatus
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum BulkOperationProgressStatus
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ENQUEUED")]
@@ -102188,7 +102259,8 @@ namespace MyNamespace
 
     }
 
-    public enum CardLayoutFieldMode
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CardLayoutFieldMode
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PLAN")]
@@ -102199,7 +102271,8 @@ namespace MyNamespace
 
     }
 
-    public enum ComponentWithIssueCountAssigneeType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ComponentWithIssueCountAssigneeType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PROJECT_DEFAULT")]
@@ -102216,7 +102289,8 @@ namespace MyNamespace
 
     }
 
-    public enum ComponentWithIssueCountRealAssigneeType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ComponentWithIssueCountRealAssigneeType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PROJECT_DEFAULT")]
@@ -102233,7 +102307,8 @@ namespace MyNamespace
 
     }
 
-    public enum CompoundClauseOperator
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CompoundClauseOperator
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"and")]
@@ -102247,7 +102322,8 @@ namespace MyNamespace
 
     }
 
-    public enum ConditionGroupConfigurationOperation
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ConditionGroupConfigurationOperation
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ANY")]
@@ -102258,7 +102334,8 @@ namespace MyNamespace
 
     }
 
-    public enum ConditionGroupPayloadOperation
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ConditionGroupPayloadOperation
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ANY")]
@@ -102269,7 +102346,8 @@ namespace MyNamespace
 
     }
 
-    public enum ConditionGroupUpdateOperation
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ConditionGroupUpdateOperation
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ANY")]
@@ -102280,7 +102358,8 @@ namespace MyNamespace
 
     }
 
-    public enum ConnectCustomFieldValue_type
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ConnectCustomFieldValue_type
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"StringIssueField")]
@@ -102303,7 +102382,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreateDateFieldRequestType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreateDateFieldRequestType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"DueDate")]
@@ -102320,7 +102400,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreateIssueSourceRequestType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreateIssueSourceRequestType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Board")]
@@ -102334,7 +102415,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreatePermissionHolderRequestType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreatePermissionHolderRequestType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Group")]
@@ -102345,7 +102427,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreatePermissionRequestType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreatePermissionRequestType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"View")]
@@ -102356,7 +102439,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreatePlanOnlyTeamRequestPlanningStyle
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreatePlanOnlyTeamRequestPlanningStyle
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Scrum")]
@@ -102367,7 +102451,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreatePriorityDetailsIconUrl
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreatePriorityDetailsIconUrl
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"/images/icons/priorities/blocker.png")]
@@ -102432,7 +102517,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreateProjectDetailsAssigneeType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreateProjectDetailsAssigneeType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PROJECT_LEAD")]
@@ -102443,7 +102529,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreateProjectDetailsProjectTemplateKey
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreateProjectDetailsProjectTemplateKey
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"com.pyxis.greenhopper.jira:gh-simplified-agility-kanban")]
@@ -102586,7 +102673,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreateProjectDetailsProjectTypeKey
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreateProjectDetailsProjectTypeKey
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"software")]
@@ -102600,7 +102688,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreateSchedulingRequestDependencies
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreateSchedulingRequestDependencies
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Sequential")]
@@ -102611,7 +102700,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreateSchedulingRequestEstimation
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreateSchedulingRequestEstimation
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"StoryPoints")]
@@ -102625,7 +102715,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreateSchedulingRequestInferredDates
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreateSchedulingRequestInferredDates
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"None")]
@@ -102639,7 +102730,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreateWorkflowConditionOperator
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreateWorkflowConditionOperator
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"AND")]
@@ -102650,7 +102742,8 @@ namespace MyNamespace
 
     }
 
-    public enum CreateWorkflowTransitionDetailsType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CreateWorkflowTransitionDetailsType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"global")]
@@ -102664,7 +102757,8 @@ namespace MyNamespace
 
     }
 
-    public enum CustomFieldDefinitionJsonBeanSearcherKey
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CustomFieldDefinitionJsonBeanSearcherKey
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"com.atlassian.jira.plugin.system.customfieldtypes:cascadingselectsearcher")]
@@ -102708,7 +102802,8 @@ namespace MyNamespace
 
     }
 
-    public enum CustomFieldPayloadOnConflict
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CustomFieldPayloadOnConflict
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"FAIL")]
@@ -102722,7 +102817,8 @@ namespace MyNamespace
 
     }
 
-    public enum CustomTemplatesProjectDetailsAccessLevel
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CustomTemplatesProjectDetailsAccessLevel
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"open")]
@@ -102739,7 +102835,8 @@ namespace MyNamespace
 
     }
 
-    public enum CustomTemplatesProjectDetailsAssigneeType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum CustomTemplatesProjectDetailsAssigneeType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PROJECT_DEFAULT")]
@@ -102756,7 +102853,8 @@ namespace MyNamespace
 
     }
 
-    public enum DashboardGadgetColor
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum DashboardGadgetColor
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"blue")]
@@ -102785,7 +102883,8 @@ namespace MyNamespace
 
     }
 
-    public enum DefaultShareScopeScope
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum DefaultShareScopeScope
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"GLOBAL")]
@@ -102799,7 +102898,8 @@ namespace MyNamespace
 
     }
 
-    public enum EventNotificationNotificationType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum EventNotificationNotificationType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"CurrentAssignee")]
@@ -102840,7 +102940,8 @@ namespace MyNamespace
 
     }
 
-    public enum FieldChangedClauseOperator
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum FieldChangedClauseOperator
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"changed")]
@@ -102848,7 +102949,8 @@ namespace MyNamespace
 
     }
 
-    public enum FieldLastUsedType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum FieldLastUsedType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"TRACKED")]
@@ -102862,7 +102964,8 @@ namespace MyNamespace
 
     }
 
-    public enum FieldReferenceDataAuto
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum FieldReferenceDataAuto
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"true")]
@@ -102873,7 +102976,8 @@ namespace MyNamespace
 
     }
 
-    public enum FieldReferenceDataDeprecated
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum FieldReferenceDataDeprecated
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"true")]
@@ -102884,7 +102988,8 @@ namespace MyNamespace
 
     }
 
-    public enum FieldReferenceDataOrderable
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum FieldReferenceDataOrderable
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"true")]
@@ -102895,7 +103000,8 @@ namespace MyNamespace
 
     }
 
-    public enum FieldReferenceDataSearchable
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum FieldReferenceDataSearchable
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"true")]
@@ -102906,7 +103012,8 @@ namespace MyNamespace
 
     }
 
-    public enum FieldValueClauseOperator
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum FieldValueClauseOperator
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"=")]
@@ -102947,7 +103054,8 @@ namespace MyNamespace
 
     }
 
-    public enum FieldWasClauseOperator
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum FieldWasClauseOperator
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"was")]
@@ -102964,7 +103072,8 @@ namespace MyNamespace
 
     }
 
-    public enum FunctionReferenceDataIsList
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum FunctionReferenceDataIsList
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"true")]
@@ -102975,7 +103084,8 @@ namespace MyNamespace
 
     }
 
-    public enum FunctionReferenceDataSupportsListAndSingleValueOperators
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum FunctionReferenceDataSupportsListAndSingleValueOperators
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"true")]
@@ -102986,7 +103096,8 @@ namespace MyNamespace
 
     }
 
-    public enum GetAtlassianTeamResponsePlanningStyle
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum GetAtlassianTeamResponsePlanningStyle
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Scrum")]
@@ -102997,7 +103108,8 @@ namespace MyNamespace
 
     }
 
-    public enum GetDateFieldResponseType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum GetDateFieldResponseType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"DueDate")]
@@ -103014,7 +103126,8 @@ namespace MyNamespace
 
     }
 
-    public enum GetIssueSourceResponseType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum GetIssueSourceResponseType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Board")]
@@ -103031,7 +103144,8 @@ namespace MyNamespace
 
     }
 
-    public enum GetPermissionHolderResponseType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum GetPermissionHolderResponseType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Group")]
@@ -103042,7 +103156,8 @@ namespace MyNamespace
 
     }
 
-    public enum GetPermissionResponseType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum GetPermissionResponseType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"View")]
@@ -103053,7 +103168,8 @@ namespace MyNamespace
 
     }
 
-    public enum GetPlanOnlyTeamResponsePlanningStyle
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum GetPlanOnlyTeamResponsePlanningStyle
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Scrum")]
@@ -103064,7 +103180,8 @@ namespace MyNamespace
 
     }
 
-    public enum GetPlanResponseStatus
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum GetPlanResponseStatus
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Active")]
@@ -103078,7 +103195,8 @@ namespace MyNamespace
 
     }
 
-    public enum GetPlanResponseForPageStatus
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum GetPlanResponseForPageStatus
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Active")]
@@ -103092,7 +103210,8 @@ namespace MyNamespace
 
     }
 
-    public enum GetSchedulingResponseDependencies
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum GetSchedulingResponseDependencies
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Sequential")]
@@ -103103,7 +103222,8 @@ namespace MyNamespace
 
     }
 
-    public enum GetSchedulingResponseEstimation
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum GetSchedulingResponseEstimation
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"StoryPoints")]
@@ -103117,7 +103237,8 @@ namespace MyNamespace
 
     }
 
-    public enum GetSchedulingResponseInferredDates
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum GetSchedulingResponseInferredDates
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"None")]
@@ -103131,7 +103252,8 @@ namespace MyNamespace
 
     }
 
-    public enum GetTeamResponseForPageType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum GetTeamResponseForPageType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PlanOnly")]
@@ -103142,7 +103264,8 @@ namespace MyNamespace
 
     }
 
-    public enum Attributes
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Attributes
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"notSelectable")]
@@ -103153,7 +103276,8 @@ namespace MyNamespace
 
     }
 
-    public enum GroupLabelType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum GroupLabelType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ADMIN")]
@@ -103167,7 +103291,8 @@ namespace MyNamespace
 
     }
 
-    public enum MultiSelectFieldOptions
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum MultiSelectFieldOptions
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ADD")]
@@ -103184,7 +103309,8 @@ namespace MyNamespace
 
     }
 
-    public enum Attributes2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Attributes2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"notSelectable")]
@@ -103195,7 +103321,8 @@ namespace MyNamespace
 
     }
 
-    public enum IssueLayouItemtPayloadSectionType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum IssueLayouItemtPayloadSectionType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"content")]
@@ -103209,7 +103336,8 @@ namespace MyNamespace
 
     }
 
-    public enum IssueLayouItemtPayloadType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum IssueLayouItemtPayloadType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"FIELD")]
@@ -103217,7 +103345,8 @@ namespace MyNamespace
 
     }
 
-    public enum IssueLayoutPayloadIssueLayoutType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum IssueLayoutPayloadIssueLayoutType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ISSUE_VIEW")]
@@ -103231,7 +103360,8 @@ namespace MyNamespace
 
     }
 
-    public enum IssueTypeCreateBeanType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum IssueTypeCreateBeanType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"subtask")]
@@ -103242,7 +103372,8 @@ namespace MyNamespace
 
     }
 
-    public enum IssueTypeHierarchyPayloadOnConflict
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum IssueTypeHierarchyPayloadOnConflict
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"FAIL")]
@@ -103256,7 +103387,8 @@ namespace MyNamespace
 
     }
 
-    public enum IssueTypePayloadOnConflict
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum IssueTypePayloadOnConflict
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"FAIL")]
@@ -103270,7 +103402,8 @@ namespace MyNamespace
 
     }
 
-    public enum JexpJqlIssuesValidation
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum JexpJqlIssuesValidation
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"strict")]
@@ -103284,7 +103417,8 @@ namespace MyNamespace
 
     }
 
-    public enum JiraExpressionValidationErrorType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum JiraExpressionValidationErrorType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"syntax")]
@@ -103298,7 +103432,8 @@ namespace MyNamespace
 
     }
 
-    public enum JiraLabelsFieldBulkEditMultiSelectFieldOption
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum JiraLabelsFieldBulkEditMultiSelectFieldOption
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ADD")]
@@ -103315,7 +103450,8 @@ namespace MyNamespace
 
     }
 
-    public enum JiraMultiSelectComponentFieldBulkEditMultiSelectFieldOption
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum JiraMultiSelectComponentFieldBulkEditMultiSelectFieldOption
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ADD")]
@@ -103332,7 +103468,8 @@ namespace MyNamespace
 
     }
 
-    public enum JiraMultipleVersionPickerFieldBulkEditMultiSelectFieldOption
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum JiraMultipleVersionPickerFieldBulkEditMultiSelectFieldOption
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ADD")]
@@ -103349,7 +103486,8 @@ namespace MyNamespace
 
     }
 
-    public enum JiraStatusStatusCategory
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum JiraStatusStatusCategory
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"TODO")]
@@ -103363,7 +103501,8 @@ namespace MyNamespace
 
     }
 
-    public enum JiraWorkflowStatusStatusCategory
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum JiraWorkflowStatusStatusCategory
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"TODO")]
@@ -103377,7 +103516,8 @@ namespace MyNamespace
 
     }
 
-    public enum JqlQueryClauseTimePredicateOperator
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum JqlQueryClauseTimePredicateOperator
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"before")]
@@ -103403,7 +103543,8 @@ namespace MyNamespace
 
     }
 
-    public enum JqlQueryFieldEntityPropertyType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum JqlQueryFieldEntityPropertyType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"number")]
@@ -103423,7 +103564,8 @@ namespace MyNamespace
 
     }
 
-    public enum JqlQueryOrderByClauseElementDirection
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum JqlQueryOrderByClauseElementDirection
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"asc")]
@@ -103434,7 +103576,8 @@ namespace MyNamespace
 
     }
 
-    public enum JsonNodeNumberType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum JsonNodeNumberType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"INT")]
@@ -103457,7 +103600,8 @@ namespace MyNamespace
 
     }
 
-    public enum KeywordOperandKeyword
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum KeywordOperandKeyword
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"empty")]
@@ -103465,7 +103609,8 @@ namespace MyNamespace
 
     }
 
-    public enum LicensedApplicationPlan
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum LicensedApplicationPlan
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"UNLICENSED")]
@@ -103479,7 +103624,8 @@ namespace MyNamespace
 
     }
 
-    public enum MandatoryFieldValueType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum MandatoryFieldValueType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"adf")]
@@ -103490,7 +103636,8 @@ namespace MyNamespace
 
     }
 
-    public enum MandatoryFieldValueForADFType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum MandatoryFieldValueForADFType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"adf")]
@@ -103501,7 +103648,8 @@ namespace MyNamespace
 
     }
 
-    public enum MoveFieldBeanPosition
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum MoveFieldBeanPosition
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Earlier")]
@@ -103518,7 +103666,8 @@ namespace MyNamespace
 
     }
 
-    public enum NotificationSchemePayloadOnConflict
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum NotificationSchemePayloadOnConflict
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"FAIL")]
@@ -103532,7 +103681,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderOfCustomFieldOptionsPosition
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderOfCustomFieldOptionsPosition
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"First")]
@@ -103543,7 +103693,8 @@ namespace MyNamespace
 
     }
 
-    public enum OrderOfIssueTypesPosition
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum OrderOfIssueTypesPosition
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"First")]
@@ -103554,7 +103705,8 @@ namespace MyNamespace
 
     }
 
-    public enum PermissionPayloadDTOOnConflict
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum PermissionPayloadDTOOnConflict
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"FAIL")]
@@ -103568,7 +103720,8 @@ namespace MyNamespace
 
     }
 
-    public enum ProjectAssigneeType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ProjectAssigneeType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PROJECT_LEAD")]
@@ -103579,7 +103732,8 @@ namespace MyNamespace
 
     }
 
-    public enum ProjectTypeKey3
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ProjectTypeKey3
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"software")]
@@ -103593,7 +103747,8 @@ namespace MyNamespace
 
     }
 
-    public enum ProjectStyle
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ProjectStyle
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"classic")]
@@ -103604,7 +103759,8 @@ namespace MyNamespace
 
     }
 
-    public enum ProjectComponentAssigneeType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ProjectComponentAssigneeType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PROJECT_DEFAULT")]
@@ -103621,7 +103777,8 @@ namespace MyNamespace
 
     }
 
-    public enum ProjectComponentRealAssigneeType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ProjectComponentRealAssigneeType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PROJECT_DEFAULT")]
@@ -103638,7 +103795,8 @@ namespace MyNamespace
 
     }
 
-    public enum ProjectCreateResourceIdentifierType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ProjectCreateResourceIdentifierType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"id")]
@@ -103649,7 +103807,8 @@ namespace MyNamespace
 
     }
 
-    public enum ProjectDetailsProjectTypeKey
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ProjectDetailsProjectTypeKey
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"software")]
@@ -103663,7 +103822,8 @@ namespace MyNamespace
 
     }
 
-    public enum ProjectFeatureState2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ProjectFeatureState2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ENABLED")]
@@ -103677,7 +103837,8 @@ namespace MyNamespace
 
     }
 
-    public enum ProjectFeatureStateState
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ProjectFeatureStateState
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ENABLED")]
@@ -103691,7 +103852,8 @@ namespace MyNamespace
 
     }
 
-    public enum ProjectPayloadProjectTypeKey
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ProjectPayloadProjectTypeKey
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"software")]
@@ -103708,7 +103870,8 @@ namespace MyNamespace
 
     }
 
-    public enum Attributes3
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Attributes3
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"notSelectable")]
@@ -103719,7 +103882,8 @@ namespace MyNamespace
 
     }
 
-    public enum RoleActorType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum RoleActorType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"atlassian-group-role-actor")]
@@ -103730,7 +103894,8 @@ namespace MyNamespace
 
     }
 
-    public enum RolePayloadOnConflict
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum RolePayloadOnConflict
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"FAIL")]
@@ -103744,7 +103909,8 @@ namespace MyNamespace
 
     }
 
-    public enum RolePayloadType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum RolePayloadType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"HIDDEN")]
@@ -103758,7 +103924,8 @@ namespace MyNamespace
 
     }
 
-    public enum ScopeType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ScopeType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PROJECT")]
@@ -103769,7 +103936,8 @@ namespace MyNamespace
 
     }
 
-    public enum ScopePayloadType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ScopePayloadType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"GLOBAL")]
@@ -103780,7 +103948,8 @@ namespace MyNamespace
 
     }
 
-    public enum SearchRequestBeanValidateQuery
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum SearchRequestBeanValidateQuery
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"strict")]
@@ -103800,7 +103969,8 @@ namespace MyNamespace
 
     }
 
-    public enum SecurityLevelMemberPayloadType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum SecurityLevelMemberPayloadType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"group")]
@@ -103814,7 +103984,8 @@ namespace MyNamespace
 
     }
 
-    public enum SharePermissionType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum SharePermissionType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"user")]
@@ -103843,7 +104014,8 @@ namespace MyNamespace
 
     }
 
-    public enum SharePermissionInputBeanType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum SharePermissionInputBeanType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"user")]
@@ -103866,7 +104038,8 @@ namespace MyNamespace
 
     }
 
-    public enum StatusCreateStatusCategory
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum StatusCreateStatusCategory
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"TODO")]
@@ -103880,7 +104053,8 @@ namespace MyNamespace
 
     }
 
-    public enum StatusMetadataCategory
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum StatusMetadataCategory
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"TODO")]
@@ -103894,7 +104068,8 @@ namespace MyNamespace
 
     }
 
-    public enum StatusPayloadOnConflict
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum StatusPayloadOnConflict
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"FAIL")]
@@ -103908,7 +104083,8 @@ namespace MyNamespace
 
     }
 
-    public enum StatusPayloadStatusCategory
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum StatusPayloadStatusCategory
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"TODO")]
@@ -103922,7 +104098,8 @@ namespace MyNamespace
 
     }
 
-    public enum StatusScopeType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum StatusScopeType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PROJECT")]
@@ -103933,7 +104110,8 @@ namespace MyNamespace
 
     }
 
-    public enum StatusUpdateStatusCategory
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum StatusUpdateStatusCategory
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"TODO")]
@@ -103947,7 +104125,8 @@ namespace MyNamespace
 
     }
 
-    public enum SwimlanesPayloadSwimlaneStrategy
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum SwimlanesPayloadSwimlaneStrategy
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"none")]
@@ -103982,7 +104161,8 @@ namespace MyNamespace
 
     }
 
-    public enum TaskProgressBeanJsonNodeStatus
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum TaskProgressBeanJsonNodeStatus
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ENQUEUED")]
@@ -104008,7 +104188,8 @@ namespace MyNamespace
 
     }
 
-    public enum TaskProgressBeanObjectStatus
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum TaskProgressBeanObjectStatus
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ENQUEUED")]
@@ -104034,7 +104215,8 @@ namespace MyNamespace
 
     }
 
-    public enum TaskProgressBeanRemoveOptionFromIssuesResultStatus
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum TaskProgressBeanRemoveOptionFromIssuesResultStatus
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"ENQUEUED")]
@@ -104060,7 +104242,8 @@ namespace MyNamespace
 
     }
 
-    public enum TimeTrackingConfigurationDefaultUnit
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum TimeTrackingConfigurationDefaultUnit
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"minute")]
@@ -104077,7 +104260,8 @@ namespace MyNamespace
 
     }
 
-    public enum TimeTrackingConfigurationTimeFormat
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum TimeTrackingConfigurationTimeFormat
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"pretty")]
@@ -104091,7 +104275,8 @@ namespace MyNamespace
 
     }
 
-    public enum TransitionType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum TransitionType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"global")]
@@ -104105,7 +104290,8 @@ namespace MyNamespace
 
     }
 
-    public enum TransitionPayloadType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum TransitionPayloadType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"global")]
@@ -104119,7 +104305,8 @@ namespace MyNamespace
 
     }
 
-    public enum TransitionUpdateDTOType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum TransitionUpdateDTOType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"INITIAL")]
@@ -104133,7 +104320,8 @@ namespace MyNamespace
 
     }
 
-    public enum UiModificationContextDetailsViewType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum UiModificationContextDetailsViewType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"GIC")]
@@ -104147,7 +104335,8 @@ namespace MyNamespace
 
     }
 
-    public enum UpdateCustomFieldDetailsSearcherKey
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum UpdateCustomFieldDetailsSearcherKey
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"com.atlassian.jira.plugin.system.customfieldtypes:cascadingselectsearcher")]
@@ -104191,7 +104380,8 @@ namespace MyNamespace
 
     }
 
-    public enum UpdatePriorityDetailsIconUrl
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum UpdatePriorityDetailsIconUrl
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"/images/icons/priorities/blocker.png")]
@@ -104256,7 +104446,8 @@ namespace MyNamespace
 
     }
 
-    public enum UpdateProjectDetailsAssigneeType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum UpdateProjectDetailsAssigneeType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PROJECT_LEAD")]
@@ -104267,7 +104458,8 @@ namespace MyNamespace
 
     }
 
-    public enum UserAccountType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum UserAccountType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"atlassian")]
@@ -104284,7 +104476,8 @@ namespace MyNamespace
 
     }
 
-    public enum UserPermissionType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum UserPermissionType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"GLOBAL")]
@@ -104295,7 +104488,8 @@ namespace MyNamespace
 
     }
 
-    public enum Levels
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Levels
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"WARNING")]
@@ -104306,7 +104500,8 @@ namespace MyNamespace
 
     }
 
-    public enum Levels2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Levels2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"WARNING")]
@@ -104317,7 +104512,8 @@ namespace MyNamespace
 
     }
 
-    public enum VersionMoveBeanPosition
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum VersionMoveBeanPosition
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"Earlier")]
@@ -104334,7 +104530,8 @@ namespace MyNamespace
 
     }
 
-    public enum VisibilityType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum VisibilityType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"group")]
@@ -104345,7 +104542,8 @@ namespace MyNamespace
 
     }
 
-    public enum Events
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Events
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"jira:issue_created")]
@@ -104374,7 +104572,8 @@ namespace MyNamespace
 
     }
 
-    public enum Events2
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Events2
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"jira:issue_created")]
@@ -104403,7 +104602,8 @@ namespace MyNamespace
 
     }
 
-    public enum WorkflowCapabilitiesEditorScope
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum WorkflowCapabilitiesEditorScope
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PROJECT")]
@@ -104414,7 +104614,8 @@ namespace MyNamespace
 
     }
 
-    public enum ProjectTypes
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum ProjectTypes
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"software")]
@@ -104434,7 +104635,8 @@ namespace MyNamespace
 
     }
 
-    public enum WorkflowCompoundConditionOperator
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum WorkflowCompoundConditionOperator
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"AND")]
@@ -104445,7 +104647,8 @@ namespace MyNamespace
 
     }
 
-    public enum WorkflowPayloadOnConflict
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum WorkflowPayloadOnConflict
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"FAIL")]
@@ -104459,7 +104662,8 @@ namespace MyNamespace
 
     }
 
-    public enum WorkflowScopeType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum WorkflowScopeType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"PROJECT")]
@@ -104470,7 +104674,8 @@ namespace MyNamespace
 
     }
 
-    public enum WorkflowStatusUpdateStatusCategory
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum WorkflowStatusUpdateStatusCategory
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"TODO")]
@@ -104484,7 +104689,8 @@ namespace MyNamespace
 
     }
 
-    public enum WorkflowTransitionsType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum WorkflowTransitionsType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"INITIAL")]
@@ -104498,7 +104704,8 @@ namespace MyNamespace
 
     }
 
-    public enum WorkflowValidationErrorLevel
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum WorkflowValidationErrorLevel
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"WARNING")]
@@ -104509,7 +104716,8 @@ namespace MyNamespace
 
     }
 
-    public enum WorkflowValidationErrorType
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum WorkflowValidationErrorType
     {
 
         [System.Runtime.Serialization.EnumMember(Value = @"RULE")]

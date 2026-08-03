@@ -13,7 +13,7 @@ export class MyClass {
 
     /**
      */
-    removeElement(x_User: string, elementId: number[] | null | undefined): Promise<void> {
+    removeElement(xUser: string, elementId: number[] | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/removeElement?";
         if (elementId !== undefined && elementId !== null)
             elementId && elementId.forEach(item => { url_ += "elementId=" + encodeURIComponent("" + item) + "&"; });
@@ -22,7 +22,7 @@ export class MyClass {
         let options_: RequestInit = {
             method: "DELETE",
             headers: {
-                "X-User": x_User !== undefined && x_User !== null ? "" + x_User : "",
+                "X-User": xUser !== undefined && xUser !== null ? "" + xUser : "",
             }
         };
 

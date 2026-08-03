@@ -13,7 +13,7 @@ export class Client {
 
     /**
      */
-    _2fa(body: TwoFactorRequest): Promise<TwoFactorResponse> {
+    sendsManage2fa(body: TwoFactorRequest): Promise<TwoFactorResponse> {
         let url_ = this.baseUrl + "/manage/2fa";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -29,11 +29,11 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.process2fa(_response);
+            return this.processSendsManage2fa(_response);
         });
     }
 
-    protected process2fa(response: Response): Promise<TwoFactorResponse> {
+    protected processSendsManage2fa(response: Response): Promise<TwoFactorResponse> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {

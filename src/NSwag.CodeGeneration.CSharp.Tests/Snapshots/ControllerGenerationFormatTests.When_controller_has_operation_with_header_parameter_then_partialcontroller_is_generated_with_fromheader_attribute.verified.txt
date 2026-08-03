@@ -7,6 +7,14 @@ namespace MyNamespace
     public interface ITestController
     {
 
+        System.Threading.Tasks.Task BarAsync();
+
+
+        System.Threading.Tasks.Task ComplexAsync(ComplexType complexType);
+
+
+        System.Threading.Tasks.Task<ComplexTypeResponse> ComplexRequiredAsync(ComplexType complexType);
+
 
 
         System.Threading.Tasks.Task<string> FooAsync(string test, bool? test2);
@@ -16,19 +24,10 @@ namespace MyNamespace
         System.Threading.Tasks.Task<string> FooRequiredAsync(string test, bool test2);
 
 
-        System.Threading.Tasks.Task BarAsync();
-
-
         System.Threading.Tasks.Task HeaderParamAsync(string comesFromHeader);
 
 
-        System.Threading.Tasks.Task HeaderParamRequiredAsync(string comes_from_header);
-
-
-        System.Threading.Tasks.Task ComplexAsync(ComplexType complexType);
-
-
-        System.Threading.Tasks.Task<ComplexTypeResponse> ComplexRequiredAsync(ComplexType complexType);
+        System.Threading.Tasks.Task HeaderParamRequiredAsync(string comesFromHeader);
 
     }
 
@@ -39,6 +38,27 @@ namespace MyNamespace
         public TestController(ITestController implementation)
         {
             _implementation = implementation;
+        }
+
+        [System.Web.Http.HttpPost, System.Web.Http.Route("Bar")]
+        public System.Threading.Tasks.Task Bar()
+        {
+
+            return _implementation.BarAsync();
+        }
+
+        [System.Web.Http.HttpPost, System.Web.Http.Route("Complex")]
+        public System.Threading.Tasks.Task Complex([System.Web.Http.FromBody] ComplexType complexType)
+        {
+
+            return _implementation.ComplexAsync(complexType);
+        }
+
+        [System.Web.Http.HttpPost, System.Web.Http.Route("ComplexRequired")]
+        public System.Threading.Tasks.Task<ComplexTypeResponse> ComplexRequired([System.Web.Http.FromBody] ComplexType complexType)
+        {
+
+            return _implementation.ComplexRequiredAsync(complexType);
         }
 
         [System.Web.Http.HttpGet, System.Web.Http.Route("Foo")]
@@ -55,13 +75,6 @@ namespace MyNamespace
             return _implementation.FooRequiredAsync(test, test2);
         }
 
-        [System.Web.Http.HttpPost, System.Web.Http.Route("Bar")]
-        public System.Threading.Tasks.Task Bar()
-        {
-
-            return _implementation.BarAsync();
-        }
-
         [System.Web.Http.HttpPost, System.Web.Http.Route("HeaderParam")]
         public System.Threading.Tasks.Task HeaderParam([FromHeader] string comesFromHeader)
         {
@@ -70,24 +83,10 @@ namespace MyNamespace
         }
 
         [System.Web.Http.HttpPost, System.Web.Http.Route("HeaderParamRequired")]
-        public System.Threading.Tasks.Task HeaderParamRequired([FromHeader(Name = "comes-from-header")] string comes_from_header)
+        public System.Threading.Tasks.Task HeaderParamRequired([FromHeader(Name = "comes-from-header")] string comesFromHeader)
         {
 
-            return _implementation.HeaderParamRequiredAsync(comes_from_header);
-        }
-
-        [System.Web.Http.HttpPost, System.Web.Http.Route("Complex")]
-        public System.Threading.Tasks.Task Complex([System.Web.Http.FromBody] ComplexType complexType)
-        {
-
-            return _implementation.ComplexAsync(complexType);
-        }
-
-        [System.Web.Http.HttpPost, System.Web.Http.Route("ComplexRequired")]
-        public System.Threading.Tasks.Task<ComplexTypeResponse> ComplexRequired([System.Web.Http.FromBody] ComplexType complexType)
-        {
-
-            return _implementation.ComplexRequiredAsync(complexType);
+            return _implementation.HeaderParamRequiredAsync(comesFromHeader);
         }
 
     }

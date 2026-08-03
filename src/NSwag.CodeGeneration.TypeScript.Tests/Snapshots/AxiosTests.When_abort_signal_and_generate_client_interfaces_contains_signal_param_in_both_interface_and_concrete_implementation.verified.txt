@@ -5,8 +5,8 @@ import axios, { AxiosError } from 'axios';
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelToken } from 'axios';
 
 export interface IUrlEncodedRequestConsumingClient {
-    addMessage(message: Foo | null | undefined, messageId: string | null | undefined, signal?: AbortSignal): Promise<void>;
     getMessage(messageId: string | null, signal?: AbortSignal): Promise<Foo | null>;
+    addMessage(message: Foo | null | undefined, messageId: string | null | undefined, signal?: AbortSignal): Promise<void>;
 }
 
 export class UrlEncodedRequestConsumingClient implements IUrlEncodedRequestConsumingClient {
@@ -20,6 +20,58 @@ export class UrlEncodedRequestConsumingClient implements IUrlEncodedRequestConsu
 
         this.baseUrl = baseUrl ?? "";
 
+    }
+
+    getMessage(messageId: string | null, signal?: AbortSignal): Promise<Foo | null> {
+        let url_ = this.baseUrl + "/api/UrlEncodedRequestConsuming?";
+        if (messageId === undefined)
+            throw new globalThis.Error("The parameter 'messageId' must be defined.");
+        else if(messageId !== null)
+            url_ += "messageId=" + encodeURIComponent("" + messageId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            },
+            signal
+        };
+
+        return this.instance.request(options_).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetMessage(_response);
+        });
+    }
+
+    protected processGetMessage(response: AxiosResponse): Promise<Foo | null> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (const k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = resultData200 ? Foo.fromJS(resultData200) : null as any;
+            return Promise.resolve<Foo | null>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<Foo | null>(null as any);
     }
 
     addMessage(message: Foo | null | undefined, messageId: string | null | undefined, signal?: AbortSignal): Promise<void> {
@@ -73,58 +125,6 @@ export class UrlEncodedRequestConsumingClient implements IUrlEncodedRequestConsu
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<void>(null as any);
-    }
-
-    getMessage(messageId: string | null, signal?: AbortSignal): Promise<Foo | null> {
-        let url_ = this.baseUrl + "/api/UrlEncodedRequestConsuming?";
-        if (messageId === undefined)
-            throw new globalThis.Error("The parameter 'messageId' must be defined.");
-        else if(messageId !== null)
-            url_ += "messageId=" + encodeURIComponent("" + messageId) + "&";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "application/json"
-            },
-            signal
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processGetMessage(_response);
-        });
-    }
-
-    protected processGetMessage(response: AxiosResponse): Promise<Foo | null> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (const k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = resultData200 ? Foo.fromJS(resultData200) : null as any;
-            return Promise.resolve<Foo | null>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<Foo | null>(null as any);
     }
 }
 

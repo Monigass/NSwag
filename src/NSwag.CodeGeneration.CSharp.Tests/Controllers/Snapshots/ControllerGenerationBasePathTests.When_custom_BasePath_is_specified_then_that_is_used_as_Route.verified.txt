@@ -12,7 +12,7 @@ namespace MyNamespace
 
 
 
-        System.Threading.Tasks.Task RemoveElementAsync(string x_User, System.Collections.Generic.IEnumerable<long> elementId);
+        System.Threading.Tasks.Task RemoveElementAsync(string xUser, System.Collections.Generic.IEnumerable<long> elementId);
 
     }
 
@@ -27,10 +27,10 @@ namespace MyNamespace
         }
 
         [Microsoft.AspNetCore.Mvc.HttpDelete, Microsoft.AspNetCore.Mvc.Route("removeElement")]
-        public System.Threading.Tasks.Task RemoveElement([Microsoft.AspNetCore.Mvc.FromHeader(Name = "X-User")] string x_User, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<long> elementId)
+        public System.Threading.Tasks.Task RemoveElement([Microsoft.AspNetCore.Mvc.FromHeader(Name = "X-User")] string xUser, [Microsoft.AspNetCore.Mvc.FromQuery] System.Collections.Generic.IEnumerable<long> elementId)
         {
 
-            return _implementation.RemoveElementAsync(x_User, elementId);
+            return _implementation.RemoveElementAsync(xUser, elementId);
         }
 
     }

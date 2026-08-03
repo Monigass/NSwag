@@ -51,12 +51,12 @@ namespace MyNamespace
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
-        public virtual System.Threading.Tasks.Task<object> TestAsync(object body)
+        public virtual System.Threading.Tasks.Task<object> SendsTestAsync(object body)
         {
-            return TestAsync(body, System.Threading.CancellationToken.None);
+            return SendsTestAsync(body, System.Threading.CancellationToken.None);
         }
 
-        public virtual async System.Threading.Tasks.Task<object> TestAsync(object body, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<object> SendsTestAsync(object body, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;

@@ -18,7 +18,7 @@ public partial class Build
     string NuGetSource => "https://api.nuget.org/v3/index.json";
     [Parameter] [Secret] string NuGetApiKey;
 
-    string MyGetGetSource => "https://www.myget.org/F/nswag/api/v2/package";
+    string MyGetGetSource => "https://www.myget.org/F/monigass-nswag/api/v2/package";
     [Parameter] [Secret] string MyGetApiKey;
 
     [Parameter] [Secret] string ChocoApiKey;
@@ -29,7 +29,7 @@ public partial class Build
     string SourceToUse => IsTaggedBuild ? NuGetSource : MyGetGetSource;
 
     Target Publish => _ => _
-        .OnlyWhenDynamic(() => IsRunningOnWindows && (GitRepository.IsOnMainOrMasterBranch() || IsTaggedBuild) && GitRepository.GetGitHubOwner() == "RicoSuter")
+        .OnlyWhenDynamic(() => IsRunningOnWindows && (GitRepository.IsOnMainOrMasterBranch() || IsTaggedBuild) && string.Equals(GitRepository.GetGitHubOwner(), "Monigass", StringComparison.OrdinalIgnoreCase))
         .DependsOn(Pack)
         .Requires(() => NuGetApiKey, () => MyGetApiKey, () => ChocoApiKey, () => NpmAuthToken)
         .Executes(() =>
@@ -38,7 +38,7 @@ public partial class Build
             {
                 ChocolateyPush(_ => _
                     .SetApiKey(ChocoApiKey)
-                    .SetPathToNuGetPackage(ArtifactsDirectory.GlobFiles("NSwagStudio.*.nupkg").Single())
+                    .SetPathToNuGetPackage(ArtifactsDirectory.GlobFiles("*NSwagStudio*.nupkg").Single())
                     .SetSource("https://push.chocolatey.org/")
                 );
 

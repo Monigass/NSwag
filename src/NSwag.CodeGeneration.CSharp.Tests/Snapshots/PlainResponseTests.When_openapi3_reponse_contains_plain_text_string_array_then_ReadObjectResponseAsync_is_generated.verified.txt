@@ -6,9 +6,9 @@ namespace MyNamespace
 
     public partial interface IClient
     {
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> GetIenumerableAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> GetsAllGetIenumerablesAsync();
 
-        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> GetIenumerableAsync(System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> GetsAllGetIenumerablesAsync(System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -59,12 +59,12 @@ namespace MyNamespace
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
-        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> GetIenumerableAsync()
+        public virtual System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> GetsAllGetIenumerablesAsync()
         {
-            return GetIenumerableAsync(System.Threading.CancellationToken.None);
+            return GetsAllGetIenumerablesAsync(System.Threading.CancellationToken.None);
         }
 
-        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> GetIenumerableAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<string>> GetsAllGetIenumerablesAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;

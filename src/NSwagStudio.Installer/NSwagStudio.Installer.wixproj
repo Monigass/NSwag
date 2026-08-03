@@ -1,5 +1,4 @@
-<Project Sdk="WixToolset.Sdk/6.0.1">
-
+<Project Sdk="WixToolset.Sdk/6.0.1" ToolsVersion="4.0">
   <PropertyGroup>
     <OutputName>NSwagStudio</OutputName>
     <SuppressIces>ICE61;ICE69</SuppressIces>
@@ -7,7 +6,6 @@
     <IntermediateOutputPath>..\..\artifacts\obj\NSwagStudio.Installer\$(Configuration)\</IntermediateOutputPath>
     <DefineConstants>SourcePath=..\..\NSwagStudio\$(Configuration)</DefineConstants>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\NSwagStudio\NSwagStudio.csproj">
       <Name>NSwagStudio</Name>
@@ -15,10 +13,8 @@
       <RefTargetDir>INSTALLFOLDER</RefTargetDir>
     </ProjectReference>
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="WixToolset.Util.wixext" />
     <PackageReference Include="WixToolset.UI.wixext" />
   </ItemGroup>
-
 </Project>

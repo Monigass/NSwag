@@ -400,7 +400,8 @@ namespace MyNamespace
         }
     }
 
-    public enum MyEnum
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum MyEnum
     {
 
         One = 0,

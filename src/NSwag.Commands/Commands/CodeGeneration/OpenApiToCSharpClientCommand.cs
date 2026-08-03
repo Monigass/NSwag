@@ -2,7 +2,7 @@
 // <copyright file="SwaggerToCSharpClientCommand.cs" company="NSwag">
 //     Copyright (c) Rico Suter. All rights reserved.
 // </copyright>
-// <license>https://github.com/RicoSuter/NSwag/blob/master/LICENSE.md</license>
+// <license>https://github.com/Monigass/NSwag/blob/master/LICENSE.md</license>
 // <author>Rico Suter, mail@rsuter.com</author>
 //-----------------------------------------------------------------------
 
@@ -265,6 +265,8 @@ namespace NSwag.Commands.CodeGeneration
 
         public async Task<Dictionary<string, string>> RunAsync()
         {
+            InitializeCustomTypes();
+
             var document = await GetInputSwaggerDocument().ConfigureAwait(false);
             var clientGenerator = new CSharpClientGenerator(document, Settings);
 

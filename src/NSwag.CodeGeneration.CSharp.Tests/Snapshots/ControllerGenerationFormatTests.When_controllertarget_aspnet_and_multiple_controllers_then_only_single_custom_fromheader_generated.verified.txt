@@ -6,17 +6,8 @@ namespace MyNamespace
 
     public abstract class ControllerBase : System.Web.Http.ApiController
     {
-        [System.Web.Http.HttpGet, System.Web.Http.Route("Foo")]
-        public abstract System.Threading.Tasks.Task<string> Foo([System.Web.Http.FromUri] string test, [System.Web.Http.FromUri] bool? test2);
-
-        [System.Web.Http.HttpGet, System.Web.Http.Route("FooRequired")]
-        public abstract System.Threading.Tasks.Task<string> FooRequired([System.Web.Http.FromUri] string test, [System.Web.Http.FromUri] bool test2);
-
         [System.Web.Http.HttpPost, System.Web.Http.Route("Bar")]
         public abstract System.Threading.Tasks.Task Bar();
-
-        [System.Web.Http.HttpPost, System.Web.Http.Route("HeaderParam")]
-        public abstract System.Threading.Tasks.Task HeaderParam([FromHeader] string comesFromHeader);
 
         [System.Web.Http.HttpPost, System.Web.Http.Route("Complex")]
         public abstract System.Threading.Tasks.Task Complex([System.Web.Http.FromBody] ComplexType complexType);
@@ -24,12 +15,21 @@ namespace MyNamespace
         [System.Web.Http.HttpPost, System.Web.Http.Route("ComplexRequired")]
         public abstract System.Threading.Tasks.Task<ComplexTypeResponse> ComplexRequired([System.Web.Http.FromBody] ComplexType complexType);
 
+        [System.Web.Http.HttpGet, System.Web.Http.Route("Foo")]
+        public abstract System.Threading.Tasks.Task<string> Foo([System.Web.Http.FromUri] string test, [System.Web.Http.FromUri] bool? test2);
+
+        [System.Web.Http.HttpGet, System.Web.Http.Route("FooRequired")]
+        public abstract System.Threading.Tasks.Task<string> FooRequired([System.Web.Http.FromUri] string test, [System.Web.Http.FromUri] bool test2);
+
+        [System.Web.Http.HttpPost, System.Web.Http.Route("HeaderParam")]
+        public abstract System.Threading.Tasks.Task HeaderParam([FromHeader] string comesFromHeader);
+
     }
 
     public abstract class SecondaryControllerBase : System.Web.Http.ApiController
     {
         [System.Web.Http.HttpPost, System.Web.Http.Route("HeaderParamRequired")]
-        public abstract System.Threading.Tasks.Task HeaderParamRequired([FromHeader(Name = "comes-from-header")] string comes_from_header);
+        public abstract System.Threading.Tasks.Task HeaderParamRequired([FromHeader(Name = "comes-from-header")] string comesFromHeader);
 
     }
 

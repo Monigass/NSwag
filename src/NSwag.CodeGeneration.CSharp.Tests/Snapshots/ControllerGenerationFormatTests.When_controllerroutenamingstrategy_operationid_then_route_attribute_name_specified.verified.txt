@@ -7,6 +7,14 @@ namespace MyNamespace
     public interface ITestController
     {
 
+        System.Threading.Tasks.Task BarAsync();
+
+
+        System.Threading.Tasks.Task ComplexAsync(ComplexType complexType);
+
+
+        System.Threading.Tasks.Task<ComplexTypeResponse> ComplexRequiredAsync(ComplexType complexType);
+
 
 
         System.Threading.Tasks.Task<string> FooAsync(string test, bool? test2);
@@ -16,19 +24,10 @@ namespace MyNamespace
         System.Threading.Tasks.Task<string> FooRequiredAsync(string test, bool test2);
 
 
-        System.Threading.Tasks.Task BarAsync();
-
-
         System.Threading.Tasks.Task HeaderParamAsync(string comesFromHeader);
 
 
-        System.Threading.Tasks.Task HeaderParamRequiredAsync(string comes_from_header);
-
-
-        System.Threading.Tasks.Task ComplexAsync(ComplexType complexType);
-
-
-        System.Threading.Tasks.Task<ComplexTypeResponse> ComplexRequiredAsync(ComplexType complexType);
+        System.Threading.Tasks.Task HeaderParamRequiredAsync(string comesFromHeader);
 
     }
 
@@ -39,6 +38,27 @@ namespace MyNamespace
         public TestController(ITestController implementation)
         {
             _implementation = implementation;
+        }
+
+        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("Bar", Name = "Test_Bar")]
+        public System.Threading.Tasks.Task Bar()
+        {
+
+            return _implementation.BarAsync();
+        }
+
+        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("Complex", Name = "Test_Complex")]
+        public System.Threading.Tasks.Task Complex([Microsoft.AspNetCore.Mvc.FromBody] ComplexType complexType)
+        {
+
+            return _implementation.ComplexAsync(complexType);
+        }
+
+        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("ComplexRequired", Name = "Test_ComplexRequired")]
+        public System.Threading.Tasks.Task<ComplexTypeResponse> ComplexRequired([Microsoft.AspNetCore.Mvc.FromBody] ComplexType complexType)
+        {
+
+            return _implementation.ComplexRequiredAsync(complexType);
         }
 
         [Microsoft.AspNetCore.Mvc.HttpGet, Microsoft.AspNetCore.Mvc.Route("Foo", Name = "Test_Foo")]
@@ -55,13 +75,6 @@ namespace MyNamespace
             return _implementation.FooRequiredAsync(test, test2);
         }
 
-        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("Bar", Name = "Test_Bar")]
-        public System.Threading.Tasks.Task Bar()
-        {
-
-            return _implementation.BarAsync();
-        }
-
         [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("HeaderParam", Name = "Test_HeaderParam")]
         public System.Threading.Tasks.Task HeaderParam([Microsoft.AspNetCore.Mvc.FromHeader] string comesFromHeader)
         {
@@ -70,24 +83,10 @@ namespace MyNamespace
         }
 
         [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("HeaderParamRequired", Name = "Test_HeaderParamRequired")]
-        public System.Threading.Tasks.Task HeaderParamRequired([Microsoft.AspNetCore.Mvc.FromHeader(Name = "comes-from-header")] string comes_from_header)
+        public System.Threading.Tasks.Task HeaderParamRequired([Microsoft.AspNetCore.Mvc.FromHeader(Name = "comes-from-header")] string comesFromHeader)
         {
 
-            return _implementation.HeaderParamRequiredAsync(comes_from_header);
-        }
-
-        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("Complex", Name = "Test_Complex")]
-        public System.Threading.Tasks.Task Complex([Microsoft.AspNetCore.Mvc.FromBody] ComplexType complexType)
-        {
-
-            return _implementation.ComplexAsync(complexType);
-        }
-
-        [Microsoft.AspNetCore.Mvc.HttpPost, Microsoft.AspNetCore.Mvc.Route("ComplexRequired", Name = "Test_ComplexRequired")]
-        public System.Threading.Tasks.Task<ComplexTypeResponse> ComplexRequired([Microsoft.AspNetCore.Mvc.FromBody] ComplexType complexType)
-        {
-
-            return _implementation.ComplexRequiredAsync(complexType);
+            return _implementation.HeaderParamRequiredAsync(comesFromHeader);
         }
 
     }

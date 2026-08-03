@@ -2,13 +2,14 @@
 // <copyright file="SwaggerDocument.cs" company="NSwag">
 //     Copyright (c) Rico Suter. All rights reserved.
 // </copyright>
-// <license>https://github.com/RicoSuter/NSwag/blob/master/LICENSE.md</license>
+// <license>https://github.com/Monigass/NSwag/blob/master/LICENSE.md</license>
 // <author>Rico Suter, mail@rsuter.com</author>
 //-----------------------------------------------------------------------
 
 using System.Collections.Specialized;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Humanizer;
 using Newtonsoft.Json;
 using NJsonSchema;
 using NJsonSchema.Generation;
@@ -242,9 +243,9 @@ namespace NSwag
 
         internal IEnumerable<OpenApiOperationDescription> GetOperations()
         {
-            foreach (var p in _paths)
+            foreach (var p in _paths.OrderBy(path => path.Key, StringComparer.Ordinal))
             {
-                foreach (var o in p.Value.ActualPathItem)
+                foreach (var o in p.Value.ActualPathItem.OrderBy(operation => operation.Key, StringComparer.Ordinal))
                 {
                     yield return new OpenApiOperationDescription
                     {
@@ -361,9 +362,65 @@ namespace NSwag
 
         private static string GetOperationNameFromPath(OpenApiOperationDescription operation)
         {
-            var pathSegments = operation.Path.Trim('/').Split('/');
-            var lastPathSegment = pathSegments.LastOrDefault(s => !s.Contains('{'));
-            return string.IsNullOrEmpty(lastPathSegment) ? "Anonymous" : lastPathSegment;
+            var pathSegments = operation.Path.Trim('/').Split('/').ToList();
+            pathSegments = [.. pathSegments.Where(s => !s.Contains('{') && !s.ToLowerInvariant().Contains("api", StringComparison.InvariantCultureIgnoreCase))];
+
+            var versionPath = pathSegments.FirstOrDefault(s =>
+                new Regex("(v[0-9])+", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant).IsMatch(s));
+
+            if (!string.IsNullOrEmpty(versionPath))
+            {
+                pathSegments.Remove(versionPath);
+                versionPath = "-" + versionPath;
+            }
+
+            pathSegments = [.. pathSegments.Select(
+                s => s.ToLowerInvariant().EndsWith("data", StringComparison.InvariantCultureIgnoreCase)
+                ? s
+                : s.Singularize(inputIsKnownToBePlural: false))];
+
+            var operationId = string.Join("-", pathSegments);
+
+            // 1: Append all to methods returning collections
+            var isCollection = operation.Operation.ActualResponses.Any(r =>
+                HttpUtilities.IsSuccessStatusCode(r.Key) &&
+                r.Value.Schema?.ActualSchema.Type == JsonObjectType.Array);
+
+            if (isCollection)
+            {
+                operationId = "all-" + operationId;
+                operationId = operationId.Pluralize(inputIsKnownToBeSingular: false);
+            }
+
+            var isFind = operation.Operation.ActualParameters.Any(
+                p => p.Name.ToUpperInvariant().Contains("ID", StringComparison.InvariantCultureIgnoreCase)
+                && (p.Kind == OpenApiParameterKind.Path
+                || p.Kind == OpenApiParameterKind.Query));
+
+            var isParameterFind = operation.Operation.ActualParameters.Any(
+                p => p.Name.ToUpperInvariant().Contains("ID", StringComparison.InvariantCultureIgnoreCase)
+               && p.Kind == OpenApiParameterKind.Query);
+
+            // 2: Append the Method type
+            var method = operation.Method.ToUpperInvariant() switch
+            {
+                "POST" => "sends-",
+                "GET" => !isCollection && isFind ? "finds-" : "gets-",
+                "PUT" => "updates-",
+                "PATCH" => "patches-",
+                "DELETE" => "deletes-",
+                "OPTIONS" => "options-",
+                _ => string.Empty,
+            };
+
+            operationId = method + operationId;
+
+            if (isParameterFind)
+            {
+                operationId += "-by-parameters";
+            }
+
+            return operationId + versionPath;
         }
     }
 }

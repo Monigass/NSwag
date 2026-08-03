@@ -6,6 +6,10 @@ namespace MyNamespace
 
     public partial interface IFooClient
     {
+        System.Threading.Tasks.Task<object> DeletePersonAsync(bool? @override);
+
+        System.Threading.Tasks.Task<object> DeletePersonAsync(bool? @override, System.Threading.CancellationToken cancellationToken);
+
         System.Threading.Tasks.Task<object> GetPersonAsync(bool? @override);
 
         System.Threading.Tasks.Task<object> GetPersonAsync(bool? @override, System.Threading.CancellationToken cancellationToken);
@@ -13,10 +17,6 @@ namespace MyNamespace
         System.Threading.Tasks.Task<object> CreatePersonAsync(bool? @override);
 
         System.Threading.Tasks.Task<object> CreatePersonAsync(bool? @override, System.Threading.CancellationToken cancellationToken);
-
-        System.Threading.Tasks.Task<object> DeletePersonAsync(bool? @override);
-
-        System.Threading.Tasks.Task<object> DeletePersonAsync(bool? @override, System.Threading.CancellationToken cancellationToken);
 
     }
 

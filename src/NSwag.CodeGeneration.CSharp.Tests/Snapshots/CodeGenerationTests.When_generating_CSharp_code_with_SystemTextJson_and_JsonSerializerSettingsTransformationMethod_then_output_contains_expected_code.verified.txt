@@ -51,12 +51,12 @@ namespace MyNamespace
         partial void PrepareRequest(System.Net.Http.HttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient client, System.Net.Http.HttpResponseMessage response);
 
-        public virtual System.Threading.Tasks.Task<Person> PersonAsync()
+        public virtual System.Threading.Tasks.Task<Person> GetsPersonAsync()
         {
-            return PersonAsync(System.Threading.CancellationToken.None);
+            return GetsPersonAsync(System.Threading.CancellationToken.None);
         }
 
-        public virtual async System.Threading.Tasks.Task<Person> PersonAsync(System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<Person> GetsPersonAsync(System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -274,7 +274,8 @@ namespace MyNamespace
 
     }
 
-    public enum Sex
+    [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
+public enum Sex
     {
 
         Male = 0,
