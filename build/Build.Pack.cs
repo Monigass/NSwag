@@ -94,6 +94,11 @@ public partial class Build
 
             foreach (var nuspec in nuspecs)
             {
+                ValidateNuspecMetadata(nuspec);
+            }
+
+            foreach (var nuspec in nuspecs)
+            {
                 NuGetPack(x => x
                     .SetOutputDirectory(ArtifactsDirectory)
                     .SetConfiguration(Configuration)
@@ -124,5 +129,35 @@ public partial class Build
             // NSwagStudio.msi
             (ArtifactsDirectory / "bin" / "NSwagStudio.Installer" / Configuration / "NSwagStudio.msi").CopyToDirectory(ArtifactsDirectory);
         });
+
+    static void ValidateNuspecMetadata(AbsolutePath nuspec)
+    {
+        var content = nuspec.ReadAllText();
+
+        if (content.Contains("raw.githubusercontent.com", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException($"Nuspec {nuspec} uses raw.githubusercontent.com for iconUrl. Use CDN-hosted icon URL.");
+        }
+
+        if (!content.Contains("<authors>Rico Suter</authors>", StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException($"Nuspec {nuspec} must set <authors>Rico Suter</authors>.");
+        }
+
+        if (!content.Contains("<owners>Monigass</owners>", StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException($"Nuspec {nuspec} must set <owners>Monigass</owners>.");
+        }
+
+        if (!Regex.IsMatch(content, "<description>.*fork.*</description>", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+        {
+            throw new InvalidOperationException($"Nuspec {nuspec} description must disclose that it is a fork.");
+        }
+
+        if (!Regex.IsMatch(content, "<description>.*not the upstream.*</description>", RegexOptions.IgnoreCase | RegexOptions.Singleline))
+        {
+            throw new InvalidOperationException($"Nuspec {nuspec} description must explicitly state it is not the upstream package.");
+        }
+    }
 }
 

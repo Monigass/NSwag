@@ -4,13 +4,13 @@
     <id>Monigass.NSwagStudio</id>
     <title>NSwagStudio</title>
     <version>1.0.0</version>
-    <authors>Monigass</authors>
+    <authors>Rico Suter</authors>
     <owners>Monigass</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <licenseUrl>https://github.com/Monigass/NSwag/blob/master/LICENSE.md</licenseUrl>
     <projectUrl>https://github.com/Monigass/NSwag</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/Monigass/NSwag/master/assets/NuGetIcon.png</iconUrl>
-    <description>Fork of NSwag originally created by Rico Suter. NSwag: The OpenAPI/Swagger API toolchain for .NET and TypeScript</description>
+    <iconUrl>https://cdn.jsdelivr.net/gh/Monigass/NSwag@master/assets/NuGetIcon.png</iconUrl>
+    <description>This package distributes Monigass's fork of NSwagStudio, based on NSwag originally created by Rico Suter. It is not the upstream NSwagStudio package. NSwag is the OpenAPI/Swagger API toolchain for .NET and TypeScript.</description>
     <tags>OpenAPI Swagger AspNetCore Documentation CodeGen TypeScript WebApi AspNet admin</tags>
     <dependencies />
     <references />
